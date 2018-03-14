@@ -8,4 +8,9 @@ use Compolomus\Compomage\Traits\ImageTrait;
 class Imagick extends AbstractImage implements ImageInterface
 {
     use ImageTrait;
+
+    public function __construct()
+    {
+
+    }
 }

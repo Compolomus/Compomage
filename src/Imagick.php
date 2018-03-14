@@ -26,20 +26,34 @@ class Imagick extends AbstractImage implements ImageInterface
      */
     protected function tmp(string $source): ImageInterface
     {
-        $this->image = new \Imagick;
-        if ($this->image->readImageBlob($source)) {
-            if ($this->image->getImageAlphaChannel() !== \Imagick::ALPHACHANNEL_ACTIVATE) {
-                $this->image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);  // 8
-                #$this->image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE); // 6
+        $image = new \Imagick;
+        if ($image->readImageBlob($source)) {
+            if ($image->getImageAlphaChannel() !== \Imagick::ALPHACHANNEL_ACTIVATE) {
+                $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);  // 8
+                #$image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE); // 6
             }
         }
         $background = new \Imagick;
-        $background->newImage($this->image->getImageWidth(), $this->image->getImageHeight(), new \ImagickPixel('transparent'));
+        $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
         $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
         $this->image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
 //        $this->image->setFormat('png');
+        $this->setImage($image);
         $this->setSizes();
 
         return $this;
     }
+
+    protected function setSizes(): void
+    {
+        $args = $this->image->getImageGeometry();
+        $this->setWidth($args['width']);
+        $this->setHeight($args['height']);
+    }
+
+//    protected function setSizes(): void
+//    {
+//        $this->setWidth($this->image->getImageWidth());
+//        $this->setHeight($this->image->getImageHeight());
+//    }
 }

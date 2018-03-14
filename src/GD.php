@@ -12,6 +12,7 @@ class GD extends AbstractImage implements ImageInterface
     /**
      * GD constructor.
      * @param string $image
+     * @throws \Exception
      */
     public function __construct(string $image)
     {

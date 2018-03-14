@@ -2,8 +2,6 @@
 
 namespace Compolomus\Compomage\Traits;
 
-use Compolomus\Compomage\Interfaces\ImageInterface;
-
 trait ImageTrait
 {
     /**

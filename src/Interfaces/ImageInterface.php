@@ -6,8 +6,6 @@ interface ImageInterface
 {
     public function save(string $filename): bool;
 
-    public function tmp(): ImageInterface;
-
     public function resize();
 
     public function rotate(int $angle);
@@ -17,6 +15,4 @@ interface ImageInterface
     public function crop();
 
     public function scale();
-
-
 }

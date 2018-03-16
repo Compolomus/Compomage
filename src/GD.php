@@ -30,10 +30,8 @@ class GD extends AbstractImage implements ImageInterface
         if (!is_resource($image)) {
             throw new \Exception('Image create failed');
         }
-
         $this->setImage($image);
         $this->setSizes();
-
         // save transparent
         imagesavealpha($this->getImage(), true);
         imagealphablending($this->getImage(), false);
@@ -64,8 +62,8 @@ class GD extends AbstractImage implements ImageInterface
 
     protected function setSizes(): void
     {
-        $this->width = imagesx($this->image);
-        $this->height = imagesy($this->image);
+        $this->setWidth(imagesx($this->getImage()));
+        $this->setHeight(imagesy($this->getImage()));
     }
 
     public function newImage(int $width, int $height)

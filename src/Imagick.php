@@ -37,8 +37,8 @@ class Imagick extends AbstractImage implements ImageInterface
         $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
         $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
         $image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
-//        $this->image->setFormat('png');
         $this->setImage($image);
+        $this->getImage()->setFormat('png'); // save transparent
         $this->setSizes();
 
         return $this;
@@ -61,8 +61,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function rotate(int $angle = 90): ImageInterface
     {
-        $this->image->rotateImage(new ImagickPixel('#00000000'), $angle);
-        #$this->image->rotateImage(new ImagickPixel('transparent'), $angle);
+        $this->image->rotateImage(new \ImagickPixel('transparent'), $angle);
         $this->setSizes();
 
         return $this;
@@ -71,6 +70,27 @@ class Imagick extends AbstractImage implements ImageInterface
     public function watermark(): ImageInterface
     {
 
+    }
+
+    public function flip(): ImageInterface
+    {
+        $this->getImage()->flipImage();
+
+        return $this;
+    }
+
+    public function flop(): ImageInterface
+    {
+        $this->getImage()->flopImage();
+
+        return $this;
+    }
+
+    public function grayscale(): ImageInterface
+    {
+        $this->getImage()->modulateImage(100, 0, 100);
+
+        return $this;
     }
 
     public function crop(int $width, int $height, int $x, int $y): ImageInterface

@@ -26,6 +26,12 @@ abstract class AbstractImage
 
     abstract protected function setSizes(): void;
 
+    abstract protected function flip(): ImageInterface;
+
+    abstract protected function flop(): ImageInterface;
+
+    abstract protected function grayscale(): ImageInterface;
+
     abstract protected function resizeByPercent(int $percent): ImageInterface;
 
     abstract protected function resizeByHeight(int $height): ImageInterface;

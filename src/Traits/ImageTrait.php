@@ -109,9 +109,32 @@ trait ImageTrait
         $this->resize($width, $height);
     }
 
+    /**
+     * @param string $mode
+     * @param int $param
+     * @return ImageInterface
+     * @throws \Exception
+     */
+    public function resizeBy(string $mode, int $param): ImageInterface
+    {
+        switch($mode) {
+            case 'width':
+                $this->resizeByWidth($param);
+                break;
+            case 'height':
+                $this->resizeByHeight($param);
+                break;
+            case 'percent':
+                $this->resizeByPercent($param);
+                break;
+            default:
+                throw new \Exception('Unsupported mode type by resize');
+        }
+    }
+
     public function getBase64(): string
     {
-        return base64_encode($this);
+        return chunk_split(base64_encode($this));
 
     }
 }

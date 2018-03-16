@@ -8,7 +8,17 @@ interface ImageInterface
 
     public function resize(int $width, int $height): ImageInterface;
 
+    public function resizeByHeight(int $height): ImageInterface;
+
+    public function resizeByWidth(int $width): ImageInterface;
+
+    public function resizeByPercent(int $percent): ImageInterface;
+
     public function crop(int $width, int $height, int $x, int $y): ImageInterface;
+
+    public function flip(): ImageInterface;
+
+    public function flop(): ImageInterface;
 
     public function rotate(int $angle = 90): ImageInterface;
 

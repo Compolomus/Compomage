@@ -62,7 +62,7 @@ class Image
      */
     public function __call(string $method, $args)
     {
-//        return $this->object->$name(...$arguments);
+//        return $this->object->$method(...$args);
         return call_user_func_array([$this->object, $method], $args);
     }
 }

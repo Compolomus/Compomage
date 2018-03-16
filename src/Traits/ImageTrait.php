@@ -2,6 +2,8 @@
 
 namespace Compolomus\Compomage\Traits;
 
+use Compolomus\Compomage\Interfaces\ImageInterface;
+
 trait ImageTrait
 {
     /**
@@ -12,7 +14,7 @@ trait ImageTrait
     {
         switch ($image) {
             // base64
-            case (preg_match('^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$',
+            case (preg_match('#^[a-zA-Z0-9+/]+={0,2}$#',
                 $image) ? true : false) :
                 $this->getImageByBase64($image);
                 break;
@@ -47,6 +49,8 @@ trait ImageTrait
             throw new \Exception('Unsupported image type');
         }
         $this->tmp($image);
+
+        return null;
     }
 
     /**
@@ -86,5 +90,28 @@ trait ImageTrait
     protected function setHeight(int $height): void
     {
         $this->height = $height;
+    }
+
+    public function resizeByHeight(int $height): ImageInterface
+    {
+        $this->resize($this->getWidth() * ($height / $this->getHeight()), $height);
+    }
+
+    public function resizeByWidth(int $width): ImageInterface
+    {
+        $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
+    }
+
+    public function resizeByPercent(int $percent): ImageInterface
+    {
+        $width = $this->getWidth() * ($percent / 100);
+        $height = $this->getHeight() * ($percent / 100);
+        $this->resize($width, $height);
+    }
+
+    public function getBase64(): string
+    {
+        return base64_encode($this);
+
     }
 }

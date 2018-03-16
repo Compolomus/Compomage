@@ -12,7 +12,7 @@ abstract class AbstractImage
 
     protected $height;
 
-    abstract protected function getImage(): ImageInterface;
+    abstract protected function getImage();
 
     abstract protected function setImage($image): void;
 
@@ -26,6 +26,11 @@ abstract class AbstractImage
 
     abstract protected function setSizes(): void;
 
-    abstract protected function tmp(string $source): ImageInterface;
+    abstract protected function resizeByPercent(int $percent): ImageInterface;
 
+    abstract protected function resizeByHeight(int $height): ImageInterface;
+
+    abstract protected function resizeByWidth(int $width): ImageInterface;
+
+    abstract protected function tmp(string $source): ImageInterface;
 }

@@ -10,7 +10,7 @@ class Imagick extends AbstractImage implements ImageInterface
     use ImageTrait;
 
     /**
-     * GD constructor.
+     * Imagick constructor.
      * @param string $image
      * @throws \Exception
      */
@@ -36,7 +36,7 @@ class Imagick extends AbstractImage implements ImageInterface
         $background = new \Imagick;
         $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
         $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
-        $this->image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
+        $image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
 //        $this->image->setFormat('png');
         $this->setImage($image);
         $this->setSizes();
@@ -46,14 +46,48 @@ class Imagick extends AbstractImage implements ImageInterface
 
     protected function setSizes(): void
     {
-        $args = $this->image->getImageGeometry();
+        $args = $this->getImage()->getImageGeometry();
         $this->setWidth($args['width']);
         $this->setHeight($args['height']);
     }
 
-//    protected function setSizes(): void
-//    {
-//        $this->setWidth($this->image->getImageWidth());
-//        $this->setHeight($this->image->getImageHeight());
-//    }
+    public function resize(int $width, int $height): ImageInterface
+    {
+        $this->getImage()->scaleImage($width, $height, 1);
+        $this->setSizes();
+
+        return $this;
+    }
+
+    public function rotate(int $angle = 90): ImageInterface
+    {
+        $this->image->rotateImage(new ImagickPixel('#00000000'), $angle);
+        #$this->image->rotateImage(new ImagickPixel('transparent'), $angle);
+        $this->setSizes();
+
+        return $this;
+    }
+
+    public function watermark(): ImageInterface
+    {
+
+    }
+
+    public function crop(int $width, int $height, int $x, int $y): ImageInterface
+    {
+        $this->getImage()->cropImage($width, $height, $x, $y);
+        $this->setSizes();
+
+        return $this;
+    }
+
+    public function save(string $filename): bool
+    {
+        return true;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getImage()->getImageBlob();
+    }
 }

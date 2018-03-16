@@ -6,13 +6,13 @@ interface ImageInterface
 {
     public function save(string $filename): bool;
 
-    public function resize();
+    public function resize(int $width, int $height): ImageInterface;
 
-    public function rotate(int $angle);
+    public function crop(int $width, int $height, int $x, int $y): ImageInterface;
 
-    public function watermark();
+    public function rotate(int $angle = 90): ImageInterface;
 
-    public function crop();
+    public function watermark(): ImageInterface;
 
-    public function scale();
+    public function __toString(): string;
 }

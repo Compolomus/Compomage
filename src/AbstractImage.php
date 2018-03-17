@@ -148,7 +148,6 @@ abstract class AbstractImage
                 return $this->resizeByHeight($param);
             case 'percent':
                 return $this->resizeByPercent($param);
-                break;
             default:
                 throw new \Exception('Unsupported mode type by resize');
         }

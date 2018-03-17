@@ -66,7 +66,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function watermark(): ImageInterface
     {
-
+        return $this;
     }
 
     public function flip(): ImageInterface

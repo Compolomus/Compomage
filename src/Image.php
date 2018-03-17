@@ -48,7 +48,7 @@ class Image
      */
     private function check(string $filename, $mode = self::AUTO)
     {
-        if ($mode == self::IMAGICK | $mode == self::AUTO && extension_loaded('imagick') == true) {
+        if ($mode == self::IMAGICK || $mode == self::AUTO && extension_loaded('imagick') === true) {
             $this->class = self::IMAGICK;
             $this->object = new Imagick($filename);
             return;

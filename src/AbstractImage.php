@@ -24,6 +24,8 @@ abstract class AbstractImage
 
     abstract protected function tmp(string $source): ImageInterface;
 
+    abstract public function __toString(): string;
+
     /**
      * @param string $image
      * @throws \Exception
@@ -139,7 +141,7 @@ abstract class AbstractImage
      */
     public function resizeBy(string $mode, int $param): ImageInterface
     {
-        switch($mode) {
+        switch ($mode) {
             case 'width':
                 return $this->resizeByWidth($param);
                 break;
@@ -156,7 +158,7 @@ abstract class AbstractImage
 
     public function getBase64(): string
     {
-        return chunk_split(base64_encode($this));
+        return chunk_split(base64_encode($this->__toString()));
 
     }
 }

@@ -112,19 +112,23 @@ abstract class AbstractImage
 
     public function resizeByHeight(int $height): ImageInterface
     {
-        $this->resize($this->getWidth() * ($height / $this->getHeight()), $height);
+        return $this->resize($this->getWidth() * ($height / $this->getHeight()), $height);
     }
 
     public function resizeByWidth(int $width): ImageInterface
     {
-        $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
+        return $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
     }
 
+    /**
+     * @param int $percent
+     * @return ImageInterface
+     */
     public function resizeByPercent(int $percent): ImageInterface
     {
         $width = $this->getWidth() * ($percent / 100);
         $height = $this->getHeight() * ($percent / 100);
-        $this->resize($width, $height);
+        return $this->resize($width, $height);
     }
 
     /**
@@ -137,13 +141,13 @@ abstract class AbstractImage
     {
         switch($mode) {
             case 'width':
-                $this->resizeByWidth($param);
+                return $this->resizeByWidth($param);
                 break;
             case 'height':
-                $this->resizeByHeight($param);
+                return $this->resizeByHeight($param);
                 break;
             case 'percent':
-                $this->resizeByPercent($param);
+                return $this->resizeByPercent($param);
                 break;
             default:
                 throw new \Exception('Unsupported mode type by resize');

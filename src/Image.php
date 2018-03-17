@@ -14,6 +14,7 @@ namespace Compolomus\Compomage;
  * @method Image resizeByHeight(int $height): ImageInterface
  * @method Image resizeByWidth(int $width): ImageInterface
  * @method Image resizeByPercent(int $percent): ImageInterface
+ * @method Image resizeBy(string $mode, int $param): ImageInterface
  * @method Image getBase64(): string
  */
 
@@ -59,10 +60,14 @@ class Image
      * @param string $method
      * @param $args
      * @return mixed
+     * @throws \Exception
      */
     public function __call(string $method, $args)
     {
 //        return $this->object->$method(...$args);
+        if (!method_exists($this->object, $method)) {
+            throw new \Exception('Undefined method ' . $method);
+        }
         return call_user_func_array([$this->object, $method], $args);
     }
 }

@@ -50,7 +50,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function resize(int $width, int $height): ImageInterface
     {
-        $this->getImage()->scaleImage($width, $height, 1);
+        $this->getImage()->scaleImage($width, $height, false);
         $this->setSizes();
 
         return $this;
@@ -90,9 +90,9 @@ class Imagick extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    public function crop(int $width, int $height, int $x, int $y): ImageInterface
+    public function crop(int $width, int $height, int $startX, int $startY): ImageInterface
     {
-        $this->getImage()->cropImage($width, $height, $x, $y);
+        $this->getImage()->cropImage($width, $height, $startX, $startY);
         $this->setSizes();
 
         return $this;

@@ -144,10 +144,8 @@ abstract class AbstractImage
         switch ($mode) {
             case 'width':
                 return $this->resizeByWidth($param);
-                break;
             case 'height':
                 return $this->resizeByHeight($param);
-                break;
             case 'percent':
                 return $this->resizeByPercent($param);
                 break;

@@ -14,6 +14,8 @@ interface ImageInterface
 
     public function resizeByPercent(int $percent): ImageInterface;
 
+    public function resizeBy(string $mode, int $param): ImageInterface;
+
     public function crop(int $width, int $height, int $x, int $y): ImageInterface;
 
     public function flip(): ImageInterface;

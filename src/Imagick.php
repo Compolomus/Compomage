@@ -3,12 +3,9 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
-use Compolomus\Compomage\Traits\ImageTrait;
 
 class Imagick extends AbstractImage implements ImageInterface
 {
-    use ImageTrait;
-
     /**
      * Imagick constructor.
      * @param string $image

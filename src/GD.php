@@ -3,12 +3,9 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
-use Compolomus\Compomage\Traits\ImageTrait;
 
 class GD extends AbstractImage implements ImageInterface
 {
-    use ImageTrait;
-
     /**
      * GD constructor.
      * @param string $image

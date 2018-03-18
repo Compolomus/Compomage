@@ -14,12 +14,6 @@ abstract class AbstractImage
 
     abstract protected function setSizes(): void;
 
-    abstract protected function flip(): ImageInterface;
-
-    abstract protected function flop(): ImageInterface;
-
-    abstract protected function grayscale(): ImageInterface;
-
     abstract protected function resize(int $width, int $height): ImageInterface;
 
     abstract protected function tmp(string $source): ImageInterface;
@@ -55,15 +49,12 @@ abstract class AbstractImage
      */
     protected function getImageByURL(string $url): ?\Exception
     {
-        if (list(, , $type) = getimagesize($url)) {
-            if ($type) {
-                $upload = new \SplFileObject($url, 'rb');
-                $image = '';
-                while (!$upload->eof()) {
-                    $image .= $upload->fgets();
-                }
-            } else {
-                throw new \Exception('Unsupported image type');
+        list(, , $type) = getimagesize($url);
+        if ($type) {
+            $upload = new \SplFileObject($url, 'rb');
+            $image = '';
+            while (!$upload->eof()) {
+                $image .= $upload->fgets();
             }
         } else {
             throw new \Exception('Unsupported image type');

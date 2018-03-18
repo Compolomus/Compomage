@@ -6,7 +6,7 @@
 [![Build Status](https://scrutinizer-ci.com/g/Compolomus/Compomage/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Compolomus/Compomage/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Compolomus/Compomage/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Compolomus/Compomage/?branch=master)
 [![Code Climate](https://codeclimate.com/github/Compolomus/Compomage/badges/gpa.svg)](https://codeclimate.com/github/Compolomus/Compomage)
-[![Downloads](https://poser.pugx.org/compolomus/light-sql-query-builder/downloads)](https://packagist.org/packages/compolomus/light-sql-query-builder)
+[![Downloads](https://poser.pugx.org/compolomus/Compomage/downloads)](https://packagist.org/packages/compolomus/Compomage)
 
 ## Установка:
 

@@ -28,12 +28,11 @@ abstract class AbstractImage
     {
         switch ($image) {
             // base64
-            case (preg_match('#^[a-zA-Z0-9+/]+={0,2}$#',
-                $image) ? true : false) :
+            case base64_encode(base64_decode($image, true)) == $image :
                 $this->getImageByBase64($image);
                 break;
             // URL
-            case (substr($image, 0, 4) == 'http' ? true : false) :
+            case (substr($image, 0, 4) == 'http') :
                 $this->getImageByURL($image);
                 break;
             // Local file
@@ -49,7 +48,7 @@ abstract class AbstractImage
      */
     protected function getImageByURL(string $url): ?\Exception
     {
-        list(, , $type) = getimagesize($url);
+        [, , $type] = getimagesize($url);
         if ($type) {
             $upload = new \SplFileObject($url, 'rb');
             $image = '';
@@ -103,11 +102,19 @@ abstract class AbstractImage
         $this->height = $height;
     }
 
+    /**
+     * @param int $height
+     * @return ImageInterface
+     */
     public function resizeByHeight(int $height): ImageInterface
     {
         return $this->resize($this->getWidth() * ($height / $this->getHeight()), $height);
     }
 
+    /**
+     * @param int $width
+     * @return ImageInterface
+     */
     public function resizeByWidth(int $width): ImageInterface
     {
         return $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));

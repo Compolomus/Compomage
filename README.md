@@ -27,7 +27,7 @@ $img = new Image('./examples/crop/bee.jpg'); // Auto check Imagick or GD default
 $img->rotate(45)
     ->grayscale();
 
-echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" />';
+echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 
 /* base64 source */
 

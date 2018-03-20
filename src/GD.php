@@ -63,7 +63,7 @@ class GD extends AbstractImage implements ImageInterface
         $this->setHeight(imagesy($this->getImage()));
     }
 
-    public function newImage(int $width, int $height)
+    private function newImage(int $width, int $height)
     {
         $newimg = imagecreatetruecolor($width, $height);
         $transparent = imagecolorallocatealpha($newimg, 255, 255, 255, 127);

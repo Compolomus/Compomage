@@ -48,6 +48,13 @@ class Imagick extends AbstractImage implements ImageInterface
         $this->setHeight($args['height']);
     }
 
+    private function newImage(int $width, int $height)
+    {
+        $background = new \Imagick;
+        $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
+        $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
+    }
+
     public function resize(int $width, int $height): ImageInterface
     {
         $this->getImage()->scaleImage($width, $height, false);

@@ -30,9 +30,7 @@ class Imagick extends AbstractImage implements ImageInterface
                 #$image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE); // 6
             }
         }
-        $background = new \Imagick;
-        $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
-        $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
+        $background = $this->newBackgroundImage($image->getImageWidth(), $image->getImageHeight());
         $image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
         $this->setImage($image);
         $this->getImage()->setFormat('png'); // save transparent
@@ -48,11 +46,13 @@ class Imagick extends AbstractImage implements ImageInterface
         $this->setHeight($args['height']);
     }
 
-    private function newImage(int $width, int $height)
+    private function newBackgroundImage(int $width, int $height)
     {
         $background = new \Imagick;
-        $background->newImage($image->getImageWidth(), $image->getImageHeight(), new \ImagickPixel('transparent'));
+        $background->newImage($width, $height, new \ImagickPixel('transparent'));
         $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
+
+        return $background;
     }
 
     public function resize(int $width, int $height): ImageInterface

@@ -25,7 +25,8 @@ require __DIR__ . '/vendor/autoload.php';
 $img = new Image('./examples/crop/bee.jpg'); // Auto check Imagick or GD default
 
 $img->rotate(45)
-    ->grayscale();
+    ->grayscale()
+    ->flop();
 
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 
@@ -35,7 +36,8 @@ $base64_image = base64_encode(file_get_contents('./examples/crop/bee.jpg'));
 
 $img = new Image($base64_image, Image::GD);
 
-$img->resizeBy('percent', 150);
+$img->resizeBy('percent', 150)
+    ->flip();
 
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" />';
 
@@ -46,7 +48,7 @@ $URL_image = 'https://4.bp.blogspot.com/-P_yzboTrLUM/WGP4FUvVAQI/AAAAAAAABGc/SkR
 $img = new Image($URL_image, Image::IMAGICK);
 
 $img->resizeByWidth(600)
-    ->resizeByHeight(550);
+    ->resizeByHeight(350);
     
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" />';
 

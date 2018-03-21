@@ -30,7 +30,7 @@ class Imagick extends AbstractImage implements ImageInterface
                 #$image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE); // 6
             }
         }
-        $background = $this->newBackgroundImage($image->getImageWidth(), $image->getImageHeight());
+        $background = $this->newImage($image->getImageWidth(), $image->getImageHeight());
         $image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
         $this->setImage($image);
         $this->getImage()->setFormat('png'); // save transparent
@@ -46,7 +46,7 @@ class Imagick extends AbstractImage implements ImageInterface
         $this->setHeight($args['height']);
     }
 
-    private function newBackgroundImage(int $width, int $height)
+    private function newImage(int $width, int $height)
     {
         $background = new \Imagick;
         $background->newImage($width, $height, new \ImagickPixel('transparent'));
@@ -55,6 +55,12 @@ class Imagick extends AbstractImage implements ImageInterface
         return $background;
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws \ImagickException
+     */
     public function resize(int $width, int $height): ImageInterface
     {
         $this->getImage()->scaleImage($width, $height, false);
@@ -65,7 +71,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function rotate(int $angle = 90): ImageInterface
     {
-        $this->image->rotateImage(new \ImagickPixel('transparent'), $angle);
+        $this->getImage()->rotateImage(new \ImagickPixel('transparent'), $angle);
         $this->setSizes();
 
         return $this;

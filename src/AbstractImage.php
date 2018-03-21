@@ -6,6 +6,7 @@ use Compolomus\Compomage\Interfaces\ImageInterface;
 
 abstract class AbstractImage
 {
+
     protected $image;
 
     protected $width;
@@ -77,6 +78,9 @@ abstract class AbstractImage
         $this->image = $image;
     }
 
+    /**
+     * @return \Imagick|resource
+     */
     protected function getImage()
     {
         return $this->image;

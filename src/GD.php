@@ -57,6 +57,13 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param string $text
+     * @param string $font
+     * @param string $position
+     * @return $this
+     * @throws \Exception
+     */
     public function copyright(string $text, string $font, string $position = 'SouthWest')
     {
         $positions = [
@@ -65,33 +72,11 @@ class GD extends AbstractImage implements ImageInterface
             'SOUTHWEST' => ['x' => 0, 'y' => 2], 'SOUTH'  => ['x' => 1, 'y' => 2], 'SOUTHEAST' => ['x' => 2, 'y' => 2]
         ];
 
-        $fontSize = 14;
+        if (!array_key_exists(strtoupper($position), $positions)) {
+            throw new \Exception('Wrong position');
+        }
 
-        $coordinates = imagettfbbox($fontSize, 0, $font, $text);
-        $minX = min(array($coordinates[0],$coordinates[2],$coordinates[4],$coordinates[6]));
-        $maxX = max(array($coordinates[0],$coordinates[2],$coordinates[4],$coordinates[6]));
-        $minY = min(array($coordinates[1],$coordinates[3],$coordinates[5],$coordinates[7]));
-        $maxY = max(array($coordinates[1],$coordinates[3],$coordinates[5],$coordinates[7]));
-
-        $textX = abs($minX) + 1;
-        $textY = abs($minY) + 1;
-        $nWidth = $maxX - $minX + 3;
-        $nHeight = $maxY - $minY + 3;
-
-        $image = $this->newImage($nWidth, $nHeight);
-        $white = imagecolorallocate($image, 0, 0, 0);
-        $blue = imagecolorallocate($image, 0, 128, 128);
-        $red = imagecolorallocate($image, 255, 0, 0);
-        $black = imagecolorallocate($image, 255, 255, 255);
-        $gray = imagecolorallocate($image, 128, 128, 128);
-        imagecolortransparent($image, $white);
-        imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
-
-        imagettftext($image, $fontSize, 0, $textX, $textY, $white, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $blue, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $red, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $black, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $gray, $font, $text);
+        $image = $this->prepareImage($text, $position, $font);
 
         imagecopymerge(
             $this->getImage(),
@@ -106,6 +91,48 @@ class GD extends AbstractImage implements ImageInterface
         );
 
         return $this;
+    }
+
+    /**
+     * @param string $text
+     * @param string $position
+     * @param string $font
+     * @return resource
+     * @throws \Exception
+     */
+    private function prepareImage(string $text, string $position, string $font)
+    {
+        $fontSize = 14;
+        $coordinates = imagettfbbox($fontSize, 0, $font, $text);
+        if (!is_array($coordinates)) {
+            throw new \Exception('Does not support font');
+        }
+        $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
+        $maxX = max([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
+        $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
+        $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
+
+        $textX = abs($minX) + 1;
+        $textY = abs($minY) + 1;
+
+        $image = $this->newImage($maxX - $minX + 3, $maxY - $minY + 3);
+
+        $white = imagecolorallocate($image, 0, 0, 0);
+        $blue = imagecolorallocate($image, 0, 128, 128);
+        $red = imagecolorallocate($image, 255, 0, 0);
+        $black = imagecolorallocate($image, 255, 255, 255);
+        $gray = imagecolorallocate($image, 128, 128, 128);
+
+        imagecolortransparent($image, $white);
+        imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
+
+        imagettftext($image, $fontSize, 0, $textX, $textY, $white, $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $blue, $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $red, $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $black, $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $gray, $font, $text);
+
+        return $image;
     }
 
     protected function setSizes(): void

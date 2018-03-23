@@ -67,9 +67,15 @@ class GD extends AbstractImage implements ImageInterface
     public function copyright(string $text, string $font, string $position = 'SouthWest')
     {
         $positions = [
-            'NORTHWEST' => ['x' => 0, 'y' => 0], 'NORTH'  => ['x' => 1, 'y' => 0], 'NORTHEAST' => ['x' => 2, 'y' => 0],
-            'WEST'      => ['x' => 0, 'y' => 1], 'CENTER' => ['x' => 1, 'y' => 1], 'EAST'      => ['x' => 2, 'y' => 1],
-            'SOUTHWEST' => ['x' => 0, 'y' => 2], 'SOUTH'  => ['x' => 1, 'y' => 2], 'SOUTHEAST' => ['x' => 2, 'y' => 2]
+            'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 5, 'padY' => 5],
+            'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 5],
+            'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -5, 'padY' => 5],
+            'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 5, 'padY' => 0],
+            'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
+            'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -5, 'padY' => 0],
+            'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 5, 'padY' => -5],
+            'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -5],
+            'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -5, 'padY' => -5]
         ];
 
         if (!array_key_exists(strtoupper($position), $positions)) {
@@ -81,13 +87,13 @@ class GD extends AbstractImage implements ImageInterface
         imagecopymerge(
             $this->getImage(),
             $image,
-            intval((($this->getWidth() - imagesx($image)) / 2) * $positions[strtoupper($position)]['x']),
-            intval((($this->getHeight() - imagesy($image)) / 2) * $positions[strtoupper($position)]['y']),
+            intval((($this->getWidth() - imagesx($image)) / 2) * $positions[strtoupper($position)]['x']) + $positions[strtoupper($position)]['padX'],
+            intval((($this->getHeight() - imagesy($image)) / 2) * $positions[strtoupper($position)]['y']) + $positions[strtoupper($position)]['padY'],
             0,
             0,
             $this->getWidth(),
             $this->getHeight(),
-            60
+            80
         );
 
         return $this;
@@ -102,7 +108,7 @@ class GD extends AbstractImage implements ImageInterface
      */
     private function prepareImage(string $text, string $position, string $font)
     {
-        $fontSize = 14;
+        $fontSize = 15;
         $coordinates = imagettfbbox($fontSize, 0, $font, $text);
         if (!is_array($coordinates)) {
             throw new \Exception('Does not support font');
@@ -115,7 +121,7 @@ class GD extends AbstractImage implements ImageInterface
         $textX = abs($minX) + 1;
         $textY = abs($minY) + 1;
 
-        $image = $this->newImage($maxX - $minX + 3, $maxY - $minY + 3);
+        $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
 
         $white = imagecolorallocate($image, 0, 0, 0);
         $blue = imagecolorallocate($image, 0, 128, 128);

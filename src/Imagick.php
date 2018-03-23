@@ -115,7 +115,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @return $this
      * @throws \Exception
      */
-    public function copyright(string $text, string $position = 'SouthWest', string $font = 'Courier')
+    public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest')
     {
         $positions = [
             'NORTHWEST' => \Imagick::GRAVITY_NORTHWEST,

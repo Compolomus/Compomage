@@ -170,10 +170,10 @@ class Imagick extends AbstractImage implements ImageInterface
         $draw->setGravity($position);
 
         $image->annotateImage($draw, 10, 12, 0, $text);
-        $draw->setFillColor('white');
+        $draw->setFillColor(new \ImagickPixel('white'));
         $mask->annotateImage($draw, 11, 13, 0, $text);
         $mask->annotateImage($draw, 10, 12, 0, $text);
-        $draw->setFillColor('black');
+        $draw->setFillColor(new \ImagickPixel('black'));
         $mask->annotateImage($draw, 9, 11, 0, $text);
         $mask->setImageMatte(false);
 

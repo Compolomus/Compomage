@@ -77,14 +77,12 @@ class GD extends AbstractImage implements ImageInterface
             'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
             'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
         ];
-
         if (!array_key_exists(strtoupper($position), $positions)) {
             throw new \Exception('Wrong position');
         }
-
         imagecopymerge(
             $this->getImage(),
-            $this->prepareImage($text, $font),
+            $image = $this->prepareImage($text, $font),
             intval((($this->getWidth() - imagesx($image)) / 2) * $positions[strtoupper($position)]['x']) + $positions[strtoupper($position)]['padX'],
             intval((($this->getHeight() - imagesy($image)) / 2) * $positions[strtoupper($position)]['y']) + $positions[strtoupper($position)]['padY'],
             0,

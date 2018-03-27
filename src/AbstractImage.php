@@ -78,9 +78,6 @@ abstract class AbstractImage
         $this->image = $image;
     }
 
-    /**
-     * @return resource|\Imagick
-     */
     protected function getImage()
     {
         return $this->image;

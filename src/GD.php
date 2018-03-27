@@ -82,11 +82,9 @@ class GD extends AbstractImage implements ImageInterface
             throw new \Exception('Wrong position');
         }
 
-        $image = $this->prepareImage($text, $font);
-
         imagecopymerge(
             $this->getImage(),
-            $image,
+            $this->prepareImage($text, $font),
             intval((($this->getWidth() - imagesx($image)) / 2) * $positions[strtoupper($position)]['x']) + $positions[strtoupper($position)]['padX'],
             intval((($this->getHeight() - imagesy($image)) / 2) * $positions[strtoupper($position)]['y']) + $positions[strtoupper($position)]['padY'],
             0,

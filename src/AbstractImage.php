@@ -79,7 +79,7 @@ abstract class AbstractImage
     }
 
     /**
-     * @return \Imagick|resource
+     * @return resource|\Imagick
      */
     protected function getImage()
     {

@@ -165,7 +165,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
         $draw->setFont($font);
         $draw->setFontSize(20);
-        $draw->setFillColor('grey70');
+        $draw->setFillColor(new \ImagickPixel('grey70'));
 
         $draw->setGravity($position);
 

@@ -108,8 +108,7 @@ class GD extends AbstractImage implements ImageInterface
     private function prepareImage(string $text, string $font)
     {
         $fontSize = 15;
-        $coordinates = imagettfbbox($fontSize, 0, $font, $text);
-        if (!is_array($coordinates)) {
+        if (!$coordinates = imagettfbbox($fontSize, 0, $font, $text)) {
             throw new \Exception('Does not support font');
         }
         $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
@@ -117,8 +116,8 @@ class GD extends AbstractImage implements ImageInterface
         $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
         $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
 
-        $textX = abs($minX) + 1;
-        $textY = abs($minY) + 1;
+        $textX = intval(abs($minX)) + 1;
+        $textY = intval(abs($minY)) + 1;
 
         $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
 

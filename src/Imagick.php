@@ -26,8 +26,7 @@ class Imagick extends AbstractImage implements ImageInterface
         $image = new \Imagick;
         if ($image->readImageBlob($source)) {
             if ($image->getImageAlphaChannel() !== \Imagick::ALPHACHANNEL_ACTIVATE) {
-                $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);  // 8
-                #$image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE); // 6
+                $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
             }
         }
         $background = $this->newImage($image->getImageWidth(), $image->getImageHeight());

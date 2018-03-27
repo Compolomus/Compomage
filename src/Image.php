@@ -9,7 +9,10 @@ namespace Compolomus\Compomage;
  * @method Image resize(int $width, int $height): ImageInterface
  * @method Image crop(int $width, int $height, int $x, int $y): ImageInterface
  * @method Image rotate(int $angle = 90): ImageInterface
- * @method Image watermark(): ImageInterface
+ * @method Image getImage()
+ * @method Image getWidth(): int
+ * @method Image getHeight(): int
+ * @method Image watermark(Image $watermark, string $position): ImageInterface
  * @method Image __toString(): string
  * @method Image resizeByHeight(int $height): ImageInterface
  * @method Image resizeByWidth(int $width): ImageInterface
@@ -64,7 +67,6 @@ class Image
      */
     public function __call(string $method, $args)
     {
-//        return $this->object->$method(...$args);
         if (!method_exists($this->object, $method)) {
             throw new \Exception('Undefined method ' . $method);
         }

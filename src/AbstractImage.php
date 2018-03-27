@@ -6,7 +6,6 @@ use Compolomus\Compomage\Interfaces\ImageInterface;
 
 abstract class AbstractImage
 {
-
     protected $positions = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
         'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
@@ -43,11 +42,11 @@ abstract class AbstractImage
     {
         switch ($image) {
             // base64
-            case base64_encode(base64_decode($image, true)) == $image :
+            case base64_encode(base64_decode($image, true)) == $image:
                 $this->getImageByBase64($image);
                 break;
             // URL
-            case (substr($image, 0, 4) == 'http') :
+            case (substr($image, 0, 4) == 'http'):
                 $this->getImageByURL($image);
                 break;
             // Local file
@@ -63,8 +62,7 @@ abstract class AbstractImage
      */
     protected function getImageByURL(string $url): ?\Exception
     {
-        [, , $type] = getimagesize($url);
-        if ($type) {
+        if (getimagesize($url)) {
             $upload = new \SplFileObject($url, 'rb');
             $image = '';
             while (!$upload->eof()) {

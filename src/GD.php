@@ -93,34 +93,24 @@ class GD extends AbstractImage implements ImageInterface
      */
     private function prepareImage(string $text, string $font)
     {
-        $fontSize = 15;
-        if (!$coordinates = imagettfbbox($fontSize, 0, $font, $text)) {
+        if (!$coordinates = imagettfbbox($fontSize = 15, 0, $font, $text)) {
             throw new \Exception('Does not support font');
         }
+
         $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $maxX = max([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
         $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
-
         $textX = intval(abs($minX)) + 1;
         $textY = intval(abs($minY)) + 1;
-
         $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
-
-        $white = imagecolorallocate($image, 0, 0, 0);
-        $blue = imagecolorallocate($image, 0, 128, 128);
-        $red = imagecolorallocate($image, 255, 0, 0);
-        $black = imagecolorallocate($image, 255, 255, 255);
-        $gray = imagecolorallocate($image, 128, 128, 128);
-
-        imagecolortransparent($image, $white);
+        imagecolortransparent($image, $white = imagecolorallocate($image, 0, 0, 0));
         imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
-
         imagettftext($image, $fontSize, 0, $textX, $textY, $white, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $blue, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $red, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $black, $font, $text);
-        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $gray, $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $blue = imagecolorallocate($image, 0, 128, 128), $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 1, $textY + 1, $red = imagecolorallocate($image, 255, 0, 0), $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $black = imagecolorallocate($image, 255, 255, 255), $font, $text);
+        imagettftext($image, $fontSize, 0, $textX + 2, $textY + 2, $gray = imagecolorallocate($image, 128, 128, 128), $font, $text);
 
         return $image;
     }

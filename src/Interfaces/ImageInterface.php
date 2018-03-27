@@ -2,6 +2,8 @@
 
 namespace Compolomus\Compomage\Interfaces;
 
+use Compolomus\Compomage\Image;
+
 interface ImageInterface
 {
     public function save(string $filename): bool;
@@ -16,7 +18,7 @@ interface ImageInterface
 
     public function rotate(int $angle = 90): ImageInterface;
 
-    public function watermark(): ImageInterface;
+    public function watermark(Image $watermark, string $position): ImageInterface;
 
     public function __toString(): string;
 }

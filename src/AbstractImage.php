@@ -29,6 +29,8 @@ abstract class AbstractImage
 
     abstract protected function resize(int $width, int $height): ImageInterface;
 
+    abstract protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface;
+
     abstract protected function tmp(string $source): ImageInterface;
 
     abstract public function __toString(): string;
@@ -90,12 +92,12 @@ abstract class AbstractImage
         $this->image = $image;
     }
 
-    protected function getImage()
+    public function getImage()
     {
         return $this->image;
     }
 
-    protected function getWidth(): int
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -105,7 +107,7 @@ abstract class AbstractImage
         $this->width = $width;
     }
 
-    protected function getHeight(): int
+    public function getHeight(): int
     {
         return $this->height;
     }
@@ -162,6 +164,25 @@ abstract class AbstractImage
             default:
                 throw new \Exception('Unsupported mode type by resize');
         }
+    }
+
+    /**
+     * @param Image $watermark
+     * @param string $position
+     * @return ImageInterface
+     * @throws \Exception
+     */
+    public function watermark(Image $watermark, string $position): ImageInterface
+    {
+        if (!array_key_exists(strtoupper($position), $this->positions)) {
+            throw new \Exception('Wrong position');
+        }
+
+        return $this->prepareWatermark(
+            $watermark,
+            intval((($this->getWidth() - $watermark->getWidth()) / 2) * $this->positions[strtoupper($position)]['x']) + $this->positions[strtoupper($position)]['padX'],
+            intval((($this->getHeight() - $watermark->getHeight()) / 2) * $this->positions[strtoupper($position)]['y']) + $this->positions[strtoupper($position)]['padY']
+        );
     }
 
     public function getBase64(): string

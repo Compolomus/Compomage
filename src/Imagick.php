@@ -77,8 +77,17 @@ class Imagick extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    public function watermark(): ImageInterface
+    /**
+     * @param Image $watermark
+     * @param int $x
+     * @param int $y
+     * @return ImageInterface
+     */
+    protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
     {
+        $watermark->getImage()->evaluateImage(\Imagick::EVALUATE_MULTIPLY, 1, \Imagick::CHANNEL_ALPHA);
+        $this->getImage()->compositeImage($watermark->getImage(), \Imagick::COMPOSITE_DISSOLVE, $x, $y);
+
         return $this;
     }
 

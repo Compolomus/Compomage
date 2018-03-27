@@ -154,8 +154,29 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    public function watermark(): ImageInterface
+    /**
+     * @param Image $watermark
+     * @param int $x
+     * @param int $y
+     * @return ImageInterface
+     */
+    protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
     {
+        imagealphablending($this->getImage(), true);
+        imagesavealpha($this->getImage(), true);
+        imagecopyresampled(
+            $this->getImage(),
+            $watermark->getImage(),
+            $x,
+            $y,
+            0,
+            0,
+            $width = $watermark->getWidth(),
+            $height = $watermark->getHeight(),
+            $width,
+            $height
+        );
+
         return $this;
     }
 

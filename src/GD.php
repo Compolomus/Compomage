@@ -66,25 +66,15 @@ class GD extends AbstractImage implements ImageInterface
      */
     public function copyright(string $text, string $font, string $position = 'SouthWest')
     {
-        $positions = [
-            'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
-            'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
-            'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
-            'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
-            'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
-            'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
-            'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
-            'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
-            'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
-        ];
-        if (!array_key_exists(strtoupper($position), $positions)) {
+        if (!array_key_exists(strtoupper($position), $this->positions)) {
             throw new \Exception('Wrong position');
         }
+
         imagecopymerge(
             $this->getImage(),
             $image = $this->prepareImage($text, $font),
-            intval((($this->getWidth() - imagesx($image)) / 2) * $positions[strtoupper($position)]['x']) + $positions[strtoupper($position)]['padX'],
-            intval((($this->getHeight() - imagesy($image)) / 2) * $positions[strtoupper($position)]['y']) + $positions[strtoupper($position)]['padY'],
+            intval((($this->getWidth() - imagesx($image)) / 2) * $this->positions[strtoupper($position)]['x']) + $this->positions[strtoupper($position)]['padX'],
+            intval((($this->getHeight() - imagesy($image)) / 2) * $this->positions[strtoupper($position)]['y']) + $this->positions[strtoupper($position)]['padY'],
             0,
             0,
             $this->getWidth(),

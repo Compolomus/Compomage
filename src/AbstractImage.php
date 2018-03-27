@@ -7,6 +7,18 @@ use Compolomus\Compomage\Interfaces\ImageInterface;
 abstract class AbstractImage
 {
 
+    protected $positions = [
+        'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
+        'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
+        'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
+        'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
+        'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
+        'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
+        'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
+        'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
+        'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
+    ];
+
     protected $image;
 
     protected $width;

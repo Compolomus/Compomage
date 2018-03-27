@@ -67,22 +67,22 @@ class GD extends AbstractImage implements ImageInterface
     public function copyright(string $text, string $font, string $position = 'SouthWest')
     {
         $positions = [
-            'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 5, 'padY' => 5],
-            'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 5],
-            'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -5, 'padY' => 5],
-            'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 5, 'padY' => 0],
+            'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
+            'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
+            'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
+            'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
             'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
-            'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -5, 'padY' => 0],
-            'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 5, 'padY' => -5],
-            'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -5],
-            'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -5, 'padY' => -5]
+            'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
+            'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
+            'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
+            'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
         ];
 
         if (!array_key_exists(strtoupper($position), $positions)) {
             throw new \Exception('Wrong position');
         }
 
-        $image = $this->prepareImage($text, $position, $font);
+        $image = $this->prepareImage($text, $font);
 
         imagecopymerge(
             $this->getImage(),
@@ -101,12 +101,11 @@ class GD extends AbstractImage implements ImageInterface
 
     /**
      * @param string $text
-     * @param string $position
      * @param string $font
      * @return resource
      * @throws \Exception
      */
-    private function prepareImage(string $text, string $position, string $font)
+    private function prepareImage(string $text, string $font)
     {
         $fontSize = 15;
         $coordinates = imagettfbbox($fontSize, 0, $font, $text);

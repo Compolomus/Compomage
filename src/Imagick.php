@@ -17,6 +17,14 @@ class Imagick extends AbstractImage implements ImageInterface
     }
 
     /**
+     * @return \Imagick
+     */
+    public function getImage(): \Imagick
+    {
+        return $this->image;
+    }
+
+    /**
      * @param int $width
      * @param int $height
      * @return ImageInterface
@@ -75,7 +83,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @return $this
      * @throws \Exception
      */
-    public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest')
+    public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest'): ImageInterface
     {
         $positions = [
             'NORTHWEST' => \Imagick::GRAVITY_NORTHWEST,
@@ -88,11 +96,8 @@ class Imagick extends AbstractImage implements ImageInterface
             'SOUTHEAST' => \Imagick::GRAVITY_SOUTHEAST,
             'EAST' => \Imagick::GRAVITY_EAST
         ];
-        if (!\in_array($font, $this->getFontsList(), true)) {
-            throw new \InvalidArgumentException('Does not support font');
-        }
-        if (!array_key_exists(strtoupper($position), $positions)) {
-            throw new \InvalidArgumentException('Wrong position');
+        if (!array_key_exists(strtoupper($position), $positions) || !\in_array($font, $this->getFontsList(), true)) {
+            throw new \InvalidArgumentException('Does not support font or wrong position');
         }
         $this->getImage()->compositeImage($this->prepareImage($text, $positions[strtoupper($position)], $font),
             \Imagick::COMPOSITE_DISSOLVE, 0, 0);

@@ -8,13 +8,13 @@ abstract class AbstractImage
 {
     protected const POSITIONS = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
-        'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
+        'NORTH' => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
         'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
-        'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
-        'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
-        'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
+        'WEST' => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
+        'CENTER' => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
+        'EAST' => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
         'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
-        'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
+        'SOUTH' => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
         'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
     ];
 
@@ -24,10 +24,10 @@ abstract class AbstractImage
 
     protected $height;
 
-    public function getImage()
-    {
-        return $this->image;
-    }
+    /**
+     * @return resource|Imagick
+     */
+    abstract public function getImage();
 
     protected function setImage($image): void
     {
@@ -119,8 +119,8 @@ abstract class AbstractImage
 
         return $this->prepareWatermark(
             $watermark,
-            (int) ((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
-            (int) ((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
+            (int)((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int)((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
         );
     }
 

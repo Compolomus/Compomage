@@ -9,7 +9,7 @@ namespace Compolomus\Compomage;
  * @method Image resize(int $width, int $height): ImageInterface
  * @method Image crop(int $width, int $height, int $x, int $y): ImageInterface
  * @method Image rotate(int $angle = 90): ImageInterface
- * @method Image getImage()
+ * @method Image getImage() Imagick|resource
  * @method Image getWidth(): int
  * @method Image getHeight(): int
  * @method Image watermark(Image $watermark, string $position): ImageInterface
@@ -71,5 +71,6 @@ class Image
             throw new \InvalidArgumentException('Undefined method ' . $method);
         }
         return \call_user_func_array([$this->object, $method], $args);
+        #return $this->object->$method(...$args);
     }
 }

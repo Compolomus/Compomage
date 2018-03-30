@@ -17,6 +17,14 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
+     * @return resource
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
      * @param string $source
      * @return ImageInterface
      * @throws \Exception

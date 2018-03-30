@@ -8,31 +8,23 @@ abstract class AbstractImage
 {
     protected const POSITIONS = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
-        'NORTH' => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
+        'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
         'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
-        'WEST' => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
-        'CENTER' => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
-        'EAST' => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
+        'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
+        'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
+        'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
         'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
-        'SOUTH' => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
+        'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
         'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
     ];
-
-    protected $image;
 
     protected $width;
 
     protected $height;
 
-    /**
-     * @return resource|Imagick
-     */
     abstract public function getImage();
 
-    protected function setImage($image): void
-    {
-        $this->image = $image;
-    }
+    abstract protected function setImage($image): void;
 
     /**
      * @param string $mode

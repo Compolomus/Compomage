@@ -7,6 +7,11 @@ use Compolomus\Compomage\Interfaces\ImageInterface;
 class GD extends AbstractImage implements ImageInterface
 {
     /**
+     * @var resource
+     */
+    private $image;
+
+    /**
      * GD constructor.
      * @param string $image
      * @throws \Exception
@@ -22,6 +27,11 @@ class GD extends AbstractImage implements ImageInterface
     public function getImage()
     {
         return $this->image;
+    }
+
+    public function setImage($image): void
+    {
+        $this->image = $image;
     }
 
     /**

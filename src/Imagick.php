@@ -6,6 +6,12 @@ use Compolomus\Compomage\Interfaces\ImageInterface;
 
 class Imagick extends AbstractImage implements ImageInterface
 {
+
+    /**
+     * @var \Imagick
+     */
+    private $image;
+
     /**
      * Imagick constructor.
      * @param string $image
@@ -36,6 +42,11 @@ class Imagick extends AbstractImage implements ImageInterface
     public function getImage(): \Imagick
     {
         return $this->image;
+    }
+
+    public function setImage($image): void
+    {
+        $this->image = $image;
     }
 
     protected function setSizes(): void

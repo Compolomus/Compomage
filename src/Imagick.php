@@ -17,17 +17,10 @@ class Imagick extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @return \Imagick
-     */
-    public function getImage(): \Imagick
-    {
-        return $this->image;
-    }
-
-    /**
      * @param int $width
      * @param int $height
      * @return ImageInterface
+     * @throws \ImagickException
      */
     public function resize(int $width, int $height): ImageInterface
     {
@@ -35,6 +28,21 @@ class Imagick extends AbstractImage implements ImageInterface
         $this->setSizes();
 
         return $this;
+    }
+
+    /**
+     * @return \Imagick
+     */
+    public function getImage(): \Imagick
+    {
+        return $this->image;
+    }
+
+    protected function setSizes(): void
+    {
+        $args = $this->getImage()->getImageGeometry();
+        $this->setWidth($args['width']);
+        $this->setHeight($args['height']);
     }
 
     /**
@@ -87,14 +95,14 @@ class Imagick extends AbstractImage implements ImageInterface
     {
         $positions = [
             'NORTHWEST' => \Imagick::GRAVITY_NORTHWEST,
-            'NORTH' => \Imagick::GRAVITY_NORTH,
+            'NORTH'     => \Imagick::GRAVITY_NORTH,
             'NORTHEAST' => \Imagick::GRAVITY_NORTHEAST,
-            'WEST' => \Imagick::GRAVITY_WEST,
-            'CENTER' => \Imagick::GRAVITY_CENTER,
+            'WEST'      => \Imagick::GRAVITY_WEST,
+            'CENTER'    => \Imagick::GRAVITY_CENTER,
             'SOUTHWEST' => \Imagick::GRAVITY_SOUTHWEST,
-            'SOUTH' => \Imagick::GRAVITY_SOUTH,
+            'SOUTH'     => \Imagick::GRAVITY_SOUTH,
             'SOUTHEAST' => \Imagick::GRAVITY_SOUTHEAST,
-            'EAST' => \Imagick::GRAVITY_EAST
+            'EAST'      => \Imagick::GRAVITY_EAST
         ];
         if (!array_key_exists(strtoupper($position), $positions) || !\in_array($font, $this->getFontsList(), true)) {
             throw new \InvalidArgumentException('Does not support font or wrong position');
@@ -200,13 +208,6 @@ class Imagick extends AbstractImage implements ImageInterface
         $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
 
         return $background;
-    }
-
-    protected function setSizes(): void
-    {
-        $args = $this->getImage()->getImageGeometry();
-        $this->setWidth($args['width']);
-        $this->setHeight($args['height']);
     }
 
     /**

@@ -24,8 +24,8 @@ class GD extends AbstractImage implements ImageInterface
     protected function tmp(string $source): ImageInterface
     {
         $image = imagecreatefromstring($source);
-        if (!is_resource($image)) {
-            throw new \Exception('Image create failed');
+        if (!\is_resource($image)) {
+            throw new \InvalidArgumentException('Image create failed');
         }
         $this->setImage($image);
         $this->setSizes();
@@ -64,17 +64,17 @@ class GD extends AbstractImage implements ImageInterface
      * @return $this
      * @throws \Exception
      */
-    public function copyright(string $text, string $font, string $position = 'SouthWest')
+    public function copyright(string $text, string $font, string $position = 'SouthWest'): ImageInterface
     {
-        if (!array_key_exists(strtoupper($position), $this->positions)) {
-            throw new \Exception('Wrong position');
+        if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
+            throw new \InvalidArgumentException('Wrong position');
         }
 
         imagecopymerge(
             $this->getImage(),
             $image = $this->prepareImage($text, $font),
-            intval((($this->getWidth() - imagesx($image)) / 2) * $this->positions[strtoupper($position)]['x']) + $this->positions[strtoupper($position)]['padX'],
-            intval((($this->getHeight() - imagesy($image)) / 2) * $this->positions[strtoupper($position)]['y']) + $this->positions[strtoupper($position)]['padY'],
+            (int) ((($this->getWidth() - imagesx($image)) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int) ((($this->getHeight() - imagesy($image)) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY'],
             0,
             0,
             $this->getWidth(),
@@ -94,15 +94,15 @@ class GD extends AbstractImage implements ImageInterface
     private function prepareImage(string $text, string $font)
     {
         if (!$coordinates = imagettfbbox($fontSize = 15, 0, $font, $text)) {
-            throw new \Exception('Does not support font');
+            throw new \InvalidArgumentException('Does not support font');
         }
 
         $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $maxX = max([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
         $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
-        $textX = intval(abs($minX)) + 1;
-        $textY = intval(abs($minY)) + 1;
+        $textX = (int) abs($minX) + 1;
+        $textY = (int) abs($minY) + 1;
         $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
         imagecolortransparent($image, $white = imagecolorallocate($image, 0, 0, 0));
         imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
@@ -144,8 +144,8 @@ class GD extends AbstractImage implements ImageInterface
 
     public function crop(int $width, int $height, int $x, int $y): ImageInterface
     {
-        $width = $width - $x;
-        $height = $height - $y;
+        $width -= $x;
+        $height -= $y;
         $newimage = $this->newImage($width, $height);
         imagecopyresampled($newimage, $this->getImage(), 0, 0, $x, $y, $width, $height, $width, $height);
         $this->setImage($newimage);

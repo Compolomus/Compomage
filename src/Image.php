@@ -23,11 +23,11 @@ namespace Compolomus\Compomage;
 
 class Image
 {
-    const AUTO = 0;
+    public const AUTO = 0;
 
-    const GD = 1;
+    public const GD = 1;
 
-    const IMAGICK = 2;
+    public const IMAGICK = 2;
 
     private $class = self::GD;
 
@@ -49,9 +49,9 @@ class Image
      * @param int $mode
      * @throws \Exception
      */
-    private function check(string $filename, $mode = self::AUTO)
+    private function check(string $filename, $mode = self::AUTO): void
     {
-        if ($mode == self::IMAGICK || $mode == self::AUTO && extension_loaded('imagick') === true) {
+        if ($mode === self::IMAGICK || ($mode === self::AUTO && \extension_loaded('imagick') === true)) {
             $this->class = self::IMAGICK;
             $this->object = new Imagick($filename);
             return;
@@ -68,8 +68,8 @@ class Image
     public function __call(string $method, $args)
     {
         if (!method_exists($this->object, $method)) {
-            throw new \Exception('Undefined method ' . $method);
+            throw new \InvalidArgumentException('Undefined method ' . $method);
         }
-        return call_user_func_array([$this->object, $method], $args);
+        return \call_user_func_array([$this->object, $method], $args);
     }
 }

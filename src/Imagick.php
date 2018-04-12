@@ -99,8 +99,9 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param string $text
      * @param string $position
      * @param string $font
-     * @return $this
-     * @throws \Exception
+     * @return ImageInterface
+     * @throws \InvalidArgumentException
+     * @throws \ImagickException
      */
     public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest'): ImageInterface
     {
@@ -174,18 +175,6 @@ class Imagick extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    /**
-     * @param int $width
-     * @param int $height
-     * @return ImageInterface
-     * @throws \ImagickException
-     */
-    protected function prepareThumbnail(int $width, int $height): ImageInterface {
-        $this->getImage()->cropThumbnailImage($width, $height);
-
-        return $this;
-    }
-
     public function save(string $filename, $quality = 100): bool
     {
         $this->getImage()->setImageCompressionQuality($quality);
@@ -200,9 +189,22 @@ class Imagick extends AbstractImage implements ImageInterface
     }
 
     /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws \ImagickException
+     */
+    protected function prepareThumbnail(int $width, int $height): ImageInterface
+    {
+        $this->getImage()->cropThumbnailImage($width, $height);
+
+        return $this;
+    }
+
+    /**
      * @param string $source
      * @return ImageInterface
-     * @throws \Exception
+     * @throws \ImagickException
      */
     protected function tmp(string $source): ImageInterface
     {

@@ -22,6 +22,9 @@ abstract class AbstractImage
 
     protected $height;
 
+    /**
+     * @return mixed
+     */
     abstract public function getImage();
 
     /**
@@ -53,23 +56,40 @@ abstract class AbstractImage
         return $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     */
     abstract protected function resize(int $width, int $height): ImageInterface;
 
+    /**
+     * @return int
+     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
+    /**
+     * @param int $height
+     */
     protected function setHeight(int $height): void
     {
         $this->height = $height;
     }
 
+    /**
+     * @return int
+     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
+    /**
+     * @param int $width
+     */
     protected function setWidth(int $width): void
     {
         $this->width = $width;
@@ -114,8 +134,19 @@ abstract class AbstractImage
         );
     }
 
+    /**
+     * @param Image $watermark
+     * @param int $x
+     * @param int $y
+     * @return ImageInterface
+     */
     abstract protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface;
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     */
     public function thumbnail(int $width, int $height): ImageInterface
     {
         $newHeight = $height;
@@ -128,18 +159,37 @@ abstract class AbstractImage
         return $this->prepareThumbnail($width, $height, $newWidth, $newHeight);
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     */
     abstract protected function prepareThumbnail(int $width, int $height): ImageInterface;
 
+    /**
+     * @return string chunked base64
+     */
     public function getBase64(): string
     {
         return chunk_split(base64_encode($this->__toString()));
 
     }
 
+    /**
+     * @return string
+     */
     abstract public function __toString(): string;
 
+    /**
+     * @param $image
+     */
     abstract protected function setImage($image): void;
 
+    /**
+     * System method
+     *
+     * @param void
+     */
     abstract protected function setSizes(): void;
 
     /**
@@ -165,6 +215,7 @@ abstract class AbstractImage
 
     /**
      * @param string $base64
+     * @return void
      * @throws \Exception
      */
     protected function getImageByBase64(string $base64): void
@@ -172,12 +223,18 @@ abstract class AbstractImage
         $this->tmp(base64_decode($base64));
     }
 
+    /**
+     * @param string $source
+     * @return ImageInterface
+     */
     abstract protected function tmp(string $source): ImageInterface;
 
     /**
      * @param string $url
      * @return \Exception|null
-     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     * @throws \RuntimeException
      */
     protected function getImageByURL(string $url): ?\Exception
     {

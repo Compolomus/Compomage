@@ -60,6 +60,7 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $font
      * @param string $position
      * @return $this
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function copyright(string $text, string $font, string $position = 'SouthWest'): ImageInterface
@@ -87,6 +88,7 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $text
      * @param string $font
      * @return resource
+     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     private function prepareImage(string $text, string $font)
@@ -117,6 +119,11 @@ class GD extends AbstractImage implements ImageInterface
         return $image;
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return resource
+     */
     private function newImage(int $width, int $height)
     {
         $newimg = imagecreatetruecolor($width, $height);
@@ -128,6 +135,11 @@ class GD extends AbstractImage implements ImageInterface
         return $newimg;
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     */
     public function resize(int $width, int $height): ImageInterface
     {
         $newimage = $this->newImage($width, $height);
@@ -145,6 +157,13 @@ class GD extends AbstractImage implements ImageInterface
         $this->setHeight(imagesy($this->getImage()));
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @param int $x
+     * @param int $y
+     * @return ImageInterface
+     */
     public function crop(int $width, int $height, int $x, int $y): ImageInterface
     {
         $width -= $x;
@@ -157,6 +176,10 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param int $angle
+     * @return ImageInterface
+     */
     public function rotate(int $angle = 90): ImageInterface
     {
         $transparent = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
@@ -169,6 +192,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         ob_start();
@@ -179,11 +205,23 @@ class GD extends AbstractImage implements ImageInterface
         return trim($temp);
     }
 
+    /**
+     * @param string $filename
+     * @param int $quality
+     * @return bool
+     */
     public function save(string $filename, $quality = 100): bool
     {
         return imagepng($this->getImage(), $filename . '.png', (int)($quality / 11), PNG_ALL_FILTERS);
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @param int $newWidth
+     * @param int $newHeight
+     * @return ImageInterface
+     */
     protected function prepareThumbnail(
         int $width,
         int $height,
@@ -211,7 +249,7 @@ class GD extends AbstractImage implements ImageInterface
     /**
      * @param string $source
      * @return ImageInterface
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     protected function tmp(string $source): ImageInterface
     {

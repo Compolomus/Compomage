@@ -4,6 +4,23 @@ use Compolomus\Compomage\Image;
 
 require '../../vendor/autoload.php';
 
+(new Image('../crop/bee.jpg', Image::GD))
+    ->copyright('Test', '../couri.ttf', 'CENTER')
+    ->thumbnail(170, 180)
+    ->save('test1');
+
+(new Image(base64_encode(file_get_contents('../test.jpg')), Image::IMAGICK))
+    ->copyright('Test', 'Courier', 'CENTER')
+    ->thumbnail(170, 180)
+    ->save('test2');
+
+$URL_image = 'https://4.bp.blogspot.com/-P_yzboTrLUM/WGP4FUvVAQI/AAAAAAAABGc/SkRu_mOPKOwxsxLic-dBhugEyvPgvLEqgCLcB/s320/1.png';
+
+(new Image($URL_image))
+    ->grayscale()
+    ->thumbnail(170, 180)
+    ->save('test3');
+
 // test GD
 
 $base64_image = base64_encode(file_get_contents('../test.jpg'));

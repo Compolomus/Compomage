@@ -5,7 +5,7 @@ use Compolomus\Compomage\Image;
 require '../../vendor/autoload.php';
 
 (new Image('../crop/bee.jpg', Image::GD))
-    ->copyright('Test', '../couri.ttf', 'CENTER')
+    ->copyright('Test', realpath('../arial.ttf'), 'CENTER')
     ->thumbnail(170, 180)
     ->save('test1');
 

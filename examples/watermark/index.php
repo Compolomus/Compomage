@@ -18,7 +18,7 @@ $watermark->resizeByHeight(100);
 
 $img->watermark($watermark, 'CENTER');
 
-$img->copyright('GD test', '../couri.ttf', 'SOUTHEAST');
+$img->copyright('GD test', realpath('../couri.ttf'), 'SOUTHEAST');
 
 
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';

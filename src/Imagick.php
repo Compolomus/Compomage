@@ -186,8 +186,11 @@ class Imagick extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    public function save(string $filename): bool
+    public function save(string $filename, $quality = 100): bool
     {
+        $this->getImage()->setImageCompressionQuality($quality);
+        $this->getImage()->writeImage($filename . '.png');
+
         return true;
     }
 

@@ -16,6 +16,8 @@ echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_ima
 
 echo '<pre>' . print_r($img, true) . '</pre>';
 
+$img->save('thumbnail_test1_gd');
+
 $base64_image1 = base64_encode(file_get_contents('../crop/bee.jpg'));
 
 $img = new Image($base64_image1, Image::GD);
@@ -25,6 +27,8 @@ $img->thumbnail(170, 180);
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 
 echo '<pre>' . print_r($img, true) . '</pre>';
+
+$img->save('thumbnail_test2_gd');
 
 // test Imagick
 
@@ -36,6 +40,8 @@ echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_ima
 
 echo '<pre>' . print_r($img, true) . '</pre>';
 
+$img->save('thumbnail_test1_im');
+
 $img = new Image($base64_image1, Image::IMAGICK);
 
 $img->thumbnail(170, 180);
@@ -43,3 +49,7 @@ $img->thumbnail(170, 180);
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 
 echo '<pre>' . print_r($img, true) . '</pre>';
+
+// save Imagick test
+
+$img->save('thumbnail_test2_im');

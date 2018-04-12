@@ -179,9 +179,9 @@ class GD extends AbstractImage implements ImageInterface
         return trim($temp);
     }
 
-    public function save(string $filename): bool
+    public function save(string $filename, $quality = 100): bool
     {
-        return true;
+        return imagepng($this->getImage(), $filename . '.png', (int)($quality / 11), PNG_ALL_FILTERS);
     }
 
     protected function prepareThumbnail(

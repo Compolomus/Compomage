@@ -8,13 +8,13 @@ abstract class AbstractImage
 {
     protected const POSITIONS = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
-        'NORTH'     => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
+        'NORTH' => ['x' => 1, 'y' => 0, 'padX' => 0, 'padY' => 10],
         'NORTHEAST' => ['x' => 2, 'y' => 0, 'padX' => -10, 'padY' => 10],
-        'WEST'      => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
-        'CENTER'    => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
-        'EAST'      => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
+        'WEST' => ['x' => 0, 'y' => 1, 'padX' => 10, 'padY' => 0],
+        'CENTER' => ['x' => 1, 'y' => 1, 'padX' => 0, 'padY' => 0],
+        'EAST' => ['x' => 2, 'y' => 1, 'padX' => -10, 'padY' => 0],
         'SOUTHWEST' => ['x' => 0, 'y' => 2, 'padX' => 10, 'padY' => -10],
-        'SOUTH'     => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
+        'SOUTH' => ['x' => 1, 'y' => 2, 'padX' => 0, 'padY' => -10],
         'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
     ];
 
@@ -23,8 +23,6 @@ abstract class AbstractImage
     protected $height;
 
     abstract public function getImage();
-
-    abstract protected function setImage($image): void;
 
     /**
      * @param string $mode
@@ -118,6 +116,20 @@ abstract class AbstractImage
 
     abstract protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface;
 
+    public function thumbnail(int $width, int $height): ImageInterface
+    {
+        $newHeight = $height;
+        $newWidth = $width;
+
+        $this->getWidth() / $this->getHeight() >= $width / $height
+            ? $newWidth = (int)($this->getWidth() / ($this->getHeight() / $height))
+            : $newHeight = (int)($this->getHeight() / ($this->getWidth() / $width));
+
+        return $this->prepareThumbnail($width, $height, $newWidth, $newHeight);
+    }
+
+    abstract protected function prepareThumbnail(int $width, int $height): ImageInterface;
+
     public function getBase64(): string
     {
         return chunk_split(base64_encode($this->__toString()));
@@ -125,6 +137,8 @@ abstract class AbstractImage
     }
 
     abstract public function __toString(): string;
+
+    abstract protected function setImage($image): void;
 
     abstract protected function setSizes(): void;
 

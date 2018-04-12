@@ -21,6 +21,7 @@ namespace Compolomus\Compomage;
  * @method Image resizeBy(string $mode, int $param): ImageInterface
  * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT)
  * @method Image getBase64(): string
+ * @method Image thumbnail(int $width, int $height): ImageInterface
  */
 
 class Image

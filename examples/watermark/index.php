@@ -26,5 +26,5 @@ if (extension_loaded('imagick')) {
 	$img->copyright('Imagick test', 'Courier', 'SOUTHEAST');
 	echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 } else {
-	echo 'Imagick not supported'
+	echo 'Imagick not supported';
 }

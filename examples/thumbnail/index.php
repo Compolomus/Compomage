@@ -56,5 +56,5 @@ if (extension_loaded('imagick')) {
 	// save Imagick test
 	$img->save('thumbnail_test2_im');
 } else {
-	echo 'Imagick not supported'
+	echo 'Imagick not supported';
 }

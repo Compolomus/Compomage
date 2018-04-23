@@ -152,4 +152,11 @@ class ImageTest extends TestCase
         unlink($gdFile . '.png');
         unlink($imagickFile . '.png');
     }
+
+    public function testGrayscale()
+    {
+        $obj = $this->getImage('imagick');
+        $obj->grayscale();
+        $this->assertEquals($obj->getImage()->getImageColorspace(), \imagick::COLORSPACE_GRAY);
+    }
 }

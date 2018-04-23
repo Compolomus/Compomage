@@ -7,6 +7,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Compolomus/Compomage/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Compolomus/Compomage/?branch=master)
 [![Code Climate](https://codeclimate.com/github/Compolomus/Compomage/badges/gpa.svg)](https://codeclimate.com/github/Compolomus/Compomage)
 [![Downloads](https://poser.pugx.org/compolomus/Compomage/downloads)](https://packagist.org/packages/compolomus/Compomage)
+[![Code Coverage](https://scrutinizer-ci.com/g/compolomus/Compomage/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/compolomus/Compomage/?branch=master)
 
 ## Установка:
 

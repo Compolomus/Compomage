@@ -171,7 +171,7 @@ abstract class AbstractImage
      */
     public function getBase64(): string
     {
-        return chunk_split(base64_encode($this->__toString()));
+        return base64_encode($this->__toString());
 
     }
 
@@ -231,21 +231,21 @@ abstract class AbstractImage
 
     /**
      * @param string $url
-     * @return \Exception|null
+     * @return \InvalidArgumentException|null
+     * @throws \Exception
      * @throws \InvalidArgumentException
      * @throws \LogicException
      * @throws \RuntimeException
      */
-    protected function getImageByURL(string $url): ?\Exception
+    protected function getImageByURL(string $url): ?\InvalidArgumentException
     {
-        if (getimagesize($url)) {
-            $upload = new \SplFileObject($url, 'rb');
-            $image = '';
-            while (!$upload->eof()) {
-                $image .= $upload->fgets();
-            }
-        } else {
-            throw new \InvalidArgumentException('Unsupported image type');
+        if (@!getimagesize($url)) {
+           throw new \InvalidArgumentException('Unsupported image type');
+        }
+        $upload = new \SplFileObject($url, 'rb');
+        $image = '';
+        while (!$upload->eof()) {
+            $image .= $upload->fgets();
         }
         $this->tmp($image);
 

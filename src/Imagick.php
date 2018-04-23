@@ -185,7 +185,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function __toString(): string
     {
-        return $this->getImage()->getImageBlob();
+        return trim($this->getImage()->getImageBlob());
     }
 
     /**

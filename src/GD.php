@@ -126,13 +126,13 @@ class GD extends AbstractImage implements ImageInterface
      */
     private function newImage(int $width, int $height)
     {
-        $newimg = imagecreatetruecolor($width, $height);
-        $transparent = imagecolorallocatealpha($newimg, 255, 255, 255, 127);
-        imagefill($newimg, 0, 0, $transparent);
-        imagealphablending($newimg, true);
-        imagesavealpha($newimg, true);
+        $newimage = imagecreatetruecolor($width, $height);
+        $transparent = imagecolorallocatealpha($newimage, 255, 255, 255, 127);
+        imagefill($newimage, 0, 0, $transparent);
+        imagealphablending($newimage, true);
+        imagesavealpha($newimage, true);
 
-        return $newimg;
+        return $newimage;
     }
 
     /**
@@ -193,16 +193,22 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
+     * @throws \LogicException
+     * @throws \RangeException
      * @return string
      */
     public function __toString(): string
     {
-        ob_start();
-        imagepng($this->getImage(), null, 9, PNG_ALL_FILTERS);
-        $temp = ob_get_contents();
-        ob_clean();
+        $temp = new \SplFileObject(tempnam(sys_get_temp_dir(), 'image' . rand()), 'w+');
+        imagepng($this->getImage(), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
+        $temp->rewind();
+        $tmp = '';
 
-        return trim($temp);
+        foreach ($temp as $line) {
+            $tmp .= $line;
+        }
+
+        return trim($tmp);
     }
 
     /**
@@ -250,11 +256,11 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $source
      * @return ImageInterface
      * @throws \InvalidArgumentException
+     * @throws \Exception
      */
     protected function tmp(string $source): ImageInterface
     {
-        $image = imagecreatefromstring($source);
-        if (!\is_resource($image)) {
+        if (@!\is_resource($image = @imagecreatefromstring($source))) {
             throw new \InvalidArgumentException('Image create failed');
         }
         $this->setImage($image);

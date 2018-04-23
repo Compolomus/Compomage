@@ -3,8 +3,12 @@ language: php
 php:
   - 7.2
 
-install:
-  - travis_retry composer install --no-interaction --prefer-source
+before_script:
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
-  - vendor/bin/phpunit --configuration phpunit.xml --coverage-clover clover.xml
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

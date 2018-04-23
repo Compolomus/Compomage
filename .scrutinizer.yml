@@ -13,7 +13,7 @@ build:
     tests:
         override:
           -
-            command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover  --exclude-group ""'
+            command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover'
             coverage:
               file: 'coverage-clover'
               format: 'php-clover'

@@ -1,14 +1,30 @@
 language: php
 
 php:
-  - '7.0'
-  - '7.1'
   - '7.2'
   - nightly
 
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ondrej/php'
+    packages:
+      - imagemagick
+      - libjpeg-dev
+      - libpng12-dev
+      - php7.2
+      - php7.2-cli
+      - php7.2-common
+      - php7.2-gd
+      - php7.2-xdebug
+      - php7.2-imagick
+
+install:
+  # ImageMagick
+    - printf "\n" | pecl install imagick
   # Install composer
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
-
+  
 script:
   - vendor/bin/phpunit

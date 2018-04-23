@@ -182,6 +182,7 @@ class GD extends AbstractImage implements ImageInterface
      */
     public function rotate(int $angle = 90): ImageInterface
     {
+        $angle *= -1;
         $transparent = imagecolorallocatealpha($this->image, 0, 0, 0, 127);
         $rotate = imagerotate($this->getImage(), $angle, $transparent);
         imagealphablending($rotate, true);

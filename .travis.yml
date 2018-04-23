@@ -1,30 +1,10 @@
 language: php
 
 php:
-  - '7.2'
-  - nightly
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:ondrej/php'
-    packages:
-      - imagemagick
-      - libjpeg-dev
-      - libpng12-dev
-      - php7.2
-      - php7.2-cli
-      - php7.2-common
-      - php7.2-gd
-      - php7.2-xdebug
-      - php7.2-imagick
+  - 7.2
 
 install:
-  # ImageMagick
-    - printf "\n" | pecl install imagick
-  # Install composer
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
-  
+  - travis_retry composer install --no-interaction --prefer-source
+
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --configuration phpunit.xml --coverage-clover clover.xml

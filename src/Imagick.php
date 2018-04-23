@@ -90,7 +90,8 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function grayscale(): ImageInterface
     {
-        $this->getImage()->modulateImage(100, 0, 100);
+        $this->getImage()->transformimagecolorspace(\imagick::COLORSPACE_GRAY);
+        $this->getImage()->separateImageChannel(1);
 
         return $this;
     }

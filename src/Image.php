@@ -2,6 +2,9 @@
 
 namespace Compolomus\Compomage;
 
+use Exception;
+use InvalidArgumentException;
+
 /**
  * Class Image
  * @package Compolomus\Compomage
@@ -40,7 +43,7 @@ class Image
      * Image constructor.
      * @param string $filename
      * @param int $mode
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $filename, $mode = self::AUTO)
     {
@@ -50,11 +53,11 @@ class Image
     /**
      * @param string $filename
      * @param int $mode
-     * @throws \Exception
+     * @throws Exception
      */
     private function check(string $filename, $mode = self::AUTO): void
     {
-        if ($mode === self::IMAGICK || ($mode === self::AUTO && \extension_loaded('imagick') === true)) {
+        if ($mode === self::IMAGICK || ($mode === self::AUTO && extension_loaded('imagick') === true)) {
             $this->class = self::IMAGICK;
             $this->object = new Imagick($filename);
             return;
@@ -66,12 +69,12 @@ class Image
      * @param string $method
      * @param $args
      * @return mixed
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function __call(string $method, $args)
     {
         if (!method_exists($this->object, $method)) {
-            throw new \InvalidArgumentException('Undefined method ' . $method);
+            throw new InvalidArgumentException('Undefined method ' . $method);
         }
         return $this->object->$method(...$args);
     }

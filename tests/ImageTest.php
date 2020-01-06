@@ -3,6 +3,7 @@
 namespace Compolomus\Compomage\Tests;
 
 use Compolomus\Compomage\Image;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Imagick;
 
@@ -11,31 +12,48 @@ class ImageTest extends TestCase
     private static $imageGD;
     private static $imageImagick;
 
-    private function getImage($type = 'gd', $new = false)
+    /**
+     * @param string $type
+     * @param bool $new
+     * @return Image
+     */
+    private function getImage($type = 'gd', $new = false): Image
     {
         if (!self::$imageGD || !self::$imageImagick || $new) {
-            self::$imageGD = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg', Image::GD);
-            self::$imageImagick = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/crop/bee.jpg', Image::IMAGICK);
+            try {
+                self::$imageGD = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
+            try {
+                self::$imageImagick = new Image(dirname(__FILE__, 2) . '/examples/crop/bee.jpg',
+                    Image::IMAGICK);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
         }
 
-        return $type == 'gd' ? self::$imageGD : self::$imageImagick;
+        return $type === 'gd' ? self::$imageGD : self::$imageImagick;
     }
 
-    public function test__constructGD()
+    /**
+     * @throws Exception
+     */
+    public function test__constructGD(): void
     {
         try {
-            $obj = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg', Image::GD);
+            $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
             $this->assertInternalType('object', $obj);
             $this->assertInstanceOf(Image::class, $obj);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('Must be initialized ', $e->getMessage());
         }
         $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
-        $obj = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg', Image::GD);
+        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
         $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
-        $base64_image = base64_encode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg'));
+        $base64_image = base64_encode(file_get_contents(dirname(__FILE__, 2) . '/examples/test.jpg'));
         $obj = new Image($base64_image, Image::GD);
         $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
@@ -44,20 +62,20 @@ class ImageTest extends TestCase
         $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
     }
 
-    public function test__constructImagick()
+    public function test__constructImagick(): void
     {
         try {
-            $obj = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg', Image::IMAGICK);
+            $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
             $this->assertInternalType('object', $obj);
             $this->assertInstanceOf(Image::class, $obj);
             $this->assertInstanceOf(Imagick::class, $obj->getImage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertContains('Must be initialized ', $e->getMessage());
         }
-        $obj = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg', Image::IMAGICK);
+        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
 
-        $base64_image = base64_encode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg'));
+        $base64_image = base64_encode(file_get_contents(dirname(__FILE__, 2) . '/examples/test.jpg'));
         $obj = new Image($base64_image, Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
 
@@ -66,13 +84,13 @@ class ImageTest extends TestCase
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
-    public function test__constructAuto()
+    public function test__constructAuto(): void
     {
-        $obj = new Image(__DIR__ . DIRECTORY_SEPARATOR . '../examples/test.jpg');
+        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg');
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
-    public function testResizesBy()
+    public function testResizesBy(): void
     {
         $this->getImage()->resizeBy('width', 100);
         $this->assertEquals(100, $this->getImage()->getWidth());
@@ -82,26 +100,26 @@ class ImageTest extends TestCase
         $this->assertEquals(75, $this->getImage()->getHeight());
     }
 
-    public function testThumbnailGD()
+    public function testThumbnailGD(): void
     {
         $this->getImage()->thumbnail(100, 100);
         $this->assertEquals(100, $this->getImage()->getHeight());
         $this->assertEquals(100, $this->getImage()->getWidth());
     }
 
-    public function testThumbnailImagick()
+    public function testThumbnailImagick(): void
     {
         $this->getImage('Imagick')->thumbnail(100, 100);
         $this->assertEquals(100, $this->getImage()->getHeight());
         $this->assertEquals(100, $this->getImage()->getWidth());
     }
 
-    public function testGetFontsList()
+    public function testGetFontsList(): void
     {
         $this->assertInternalType('array', $this->getImage('Imagick')->getFontsList());
     }
 
-    public function testGetBase64()
+    public function testGetBase64(): void
     {
         $gdBase64 = $this->getImage('gd')->getBase64();
         $obj = new Image($gdBase64, Image::GD);
@@ -112,7 +130,7 @@ class ImageTest extends TestCase
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
-    public function testResize()
+    public function testResize(): void
     {
         $obj = $this->getImage('gd', true);
         $obj->resize(170, 150);
@@ -125,7 +143,7 @@ class ImageTest extends TestCase
         $this->assertEquals(140, $obj->getHeight());
     }
 
-    public function testRotate()
+    public function testRotate(): void
     {
         $obj = $this->getImage('gd', true);
         $obj->rotate();
@@ -136,10 +154,10 @@ class ImageTest extends TestCase
         $this->assertEquals(300, $obj->getWidth());
     }
 
-    public function testSave()
+    public function testSave(): void
     {
-        $gdFile = __DIR__ . DIRECTORY_SEPARATOR . './gdTest';
-        $imagickFile = __DIR__ . DIRECTORY_SEPARATOR . './imagickTest';
+        $gdFile =dirname(__FILE__, 2) . '/gdTest';
+        $imagickFile = dirname(__FILE__, 2) . '/imagickTest';
 
         $obj = $this->getImage('gd');
         $obj->save($gdFile);

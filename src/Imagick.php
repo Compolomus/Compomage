@@ -3,6 +3,9 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
+use Exception;
+use ImagickException;
+use InvalidArgumentException;
 
 class Imagick extends AbstractImage implements ImageInterface
 {
@@ -15,7 +18,7 @@ class Imagick extends AbstractImage implements ImageInterface
     /**
      * Imagick constructor.
      * @param string $image
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $image)
     {
@@ -26,7 +29,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param int $width
      * @param int $height
      * @return ImageInterface
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     public function resize(int $width, int $height): ImageInterface
     {
@@ -101,8 +104,8 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param string $position
      * @param string $font
      * @return ImageInterface
-     * @throws \InvalidArgumentException
-     * @throws \ImagickException
+     * @throws InvalidArgumentException
+     * @throws ImagickException
      */
     public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest'): ImageInterface
     {
@@ -118,7 +121,7 @@ class Imagick extends AbstractImage implements ImageInterface
             'EAST' => \Imagick::GRAVITY_EAST
         ];
         if (!array_key_exists(strtoupper($position), $positions) || !\in_array($font, $this->getFontsList(), true)) {
-            throw new \InvalidArgumentException('Does not support font or wrong position');
+            throw new InvalidArgumentException('Does not support font or wrong position');
         }
         $this->getImage()->compositeImage($this->prepareImage($text, $positions[strtoupper($position)], $font),
             \Imagick::COMPOSITE_DISSOLVE, 0, 0);
@@ -136,7 +139,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param int $position
      * @param string $font
      * @return \Imagick
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     private function prepareImage(string $text, int $position, string $font): \Imagick
     {
@@ -193,7 +196,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param int $width
      * @param int $height
      * @return ImageInterface
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     protected function prepareThumbnail(int $width, int $height): ImageInterface
     {
@@ -205,7 +208,7 @@ class Imagick extends AbstractImage implements ImageInterface
     /**
      * @param string $source
      * @return ImageInterface
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     protected function tmp(string $source): ImageInterface
     {
@@ -228,7 +231,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param int $width
      * @param int $height
      * @return \Imagick
-     * @throws \ImagickException
+     * @throws ImagickException
      */
     private function newImage(int $width, int $height): \Imagick
     {
@@ -244,7 +247,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param int $x
      * @param int $y
      * @return ImageInterface
-     * @throws \Exception
+     * @throws Exception
      */
     protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
     {

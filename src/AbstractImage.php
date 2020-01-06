@@ -3,6 +3,11 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
+use SplFileObject;
 
 abstract class AbstractImage
 {
@@ -23,7 +28,7 @@ abstract class AbstractImage
     protected $height;
 
     /**
-     * @return mixed
+     * @return \Imagick|resource
      */
     abstract public function getImage();
 
@@ -31,7 +36,7 @@ abstract class AbstractImage
      * @param string $mode
      * @param int $param
      * @return ImageInterface
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function resizeBy(string $mode, int $param): ImageInterface
     {
@@ -43,7 +48,7 @@ abstract class AbstractImage
             case 'percent':
                 return $this->resizeByPercent($param);
             default:
-                throw new \InvalidArgumentException('Unsupported mode type by resize');
+                throw new InvalidArgumentException('Unsupported mode type by resize');
         }
     }
 
@@ -119,12 +124,12 @@ abstract class AbstractImage
      * @param Image $watermark
      * @param string $position
      * @return ImageInterface
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function watermark(Image $watermark, string $position): ImageInterface
     {
         if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
-            throw new \InvalidArgumentException('Wrong position');
+            throw new InvalidArgumentException('Wrong position');
         }
 
         return $this->prepareWatermark(
@@ -171,7 +176,7 @@ abstract class AbstractImage
      */
     public function getBase64(): string
     {
-        return base64_encode($this->__toString());
+        return base64_encode((string)$this);
 
     }
 
@@ -194,7 +199,7 @@ abstract class AbstractImage
 
     /**
      * @param string $image
-     * @throws \Exception
+     * @throws Exception
      */
     protected function init(string $image): void
     {
@@ -216,7 +221,7 @@ abstract class AbstractImage
     /**
      * @param string $base64
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getImageByBase64(string $base64): void
     {
@@ -231,18 +236,18 @@ abstract class AbstractImage
 
     /**
      * @param string $url
-     * @return \InvalidArgumentException|null
-     * @throws \Exception
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws \RuntimeException
+     * @return InvalidArgumentException|null
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws RuntimeException
      */
-    protected function getImageByURL(string $url): ?\InvalidArgumentException
+    protected function getImageByURL(string $url): ?InvalidArgumentException
     {
         if (@!getimagesize($url)) {
-           throw new \InvalidArgumentException('Unsupported image type');
+            throw new InvalidArgumentException('Unsupported image type');
         }
-        $upload = new \SplFileObject($url, 'rb');
+        $upload = new SplFileObject($url, 'rb');
         $image = '';
         while (!$upload->eof()) {
             $image .= $upload->fgets();

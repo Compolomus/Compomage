@@ -3,6 +3,11 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
+use RangeException;
+use SplFileObject;
 
 class GD extends AbstractImage implements ImageInterface
 {
@@ -14,7 +19,7 @@ class GD extends AbstractImage implements ImageInterface
     /**
      * GD constructor.
      * @param string $image
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $image)
     {
@@ -60,13 +65,13 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $font
      * @param string $position
      * @return $this
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function copyright(string $text, string $font, string $position = 'SouthWest'): ImageInterface
     {
         if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
-            throw new \InvalidArgumentException('Wrong position');
+            throw new InvalidArgumentException('Wrong position');
         }
 
         imagecopymerge(
@@ -88,13 +93,13 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $text
      * @param string $font
      * @return resource
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     private function prepareImage(string $text, string $font)
     {
         if (!$coordinates = imagettfbbox($fontSize = 15, 0, $font, $text)) {
-            throw new \InvalidArgumentException('Does not support font');
+            throw new InvalidArgumentException('Does not support font');
         }
 
         $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
@@ -194,13 +199,13 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @throws \LogicException
-     * @throws \RangeException
+     * @throws LogicException
+     * @throws RangeException
      * @return string
      */
     public function __toString(): string
     {
-        $temp = new \SplFileObject(tempnam(sys_get_temp_dir(), 'image' . rand()), 'w+');
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . rand()), 'w+');
         imagepng($this->getImage(), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
         $temp->rewind();
         $tmp = '';
@@ -256,13 +261,13 @@ class GD extends AbstractImage implements ImageInterface
     /**
      * @param string $source
      * @return ImageInterface
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function tmp(string $source): ImageInterface
     {
-        if (@!\is_resource($image = @imagecreatefromstring($source))) {
-            throw new \InvalidArgumentException('Image create failed');
+        if (@!is_resource($image = @imagecreatefromstring($source))) {
+            throw new InvalidArgumentException('Image create failed');
         }
         $this->setImage($image);
         $this->setSizes();

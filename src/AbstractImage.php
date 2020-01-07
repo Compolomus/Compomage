@@ -27,6 +27,13 @@ abstract class AbstractImage
 
     protected $height;
 
+    protected $orientation;
+
+    protected function setOrientation(): void
+    {
+        $this->orientation = $this->getWidth() < $this->getHeight() ? 'vertical' : 'horizontal';
+    }
+
     /**
      * @return \Imagick|resource
      */
@@ -121,12 +128,12 @@ abstract class AbstractImage
     }
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface|Image $watermark
      * @param string $position
      * @return ImageInterface
      * @throws InvalidArgumentException
      */
-    public function watermark(Image $watermark, string $position): ImageInterface
+    public function watermark($watermark, string $position): ImageInterface
     {
         if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
             throw new InvalidArgumentException('Wrong position');
@@ -140,12 +147,12 @@ abstract class AbstractImage
     }
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface|Image $watermark
      * @param int $x
      * @param int $y
      * @return ImageInterface
      */
-    abstract protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface;
+    abstract protected function prepareWatermark($watermark, int $x, int $y): ImageInterface;
 
     /**
      * @param int $width

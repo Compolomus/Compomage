@@ -59,16 +59,16 @@ if (extension_loaded('imagick')) {
     echo 'Imagick not supported';
 }
 
-$files = [
-    'test1.png',
-    'test2.png',
-    'test3.png',
-    'thumbnail_test1_gd.png',
-    'thumbnail_test1_im.png',
-    'thumbnail_test2_gd.png',
-    'thumbnail_test2_im.png',
-];
-
-foreach ($files as $file) {
-    @unlink($file);
-}
+//$files = [
+//    'test1.png',
+//    'test2.png',
+//    'test3.png',
+//    'thumbnail_test1_gd.png',
+//    'thumbnail_test1_im.png',
+//    'thumbnail_test2_gd.png',
+//    'thumbnail_test2_im.png',
+//];
+//
+//foreach ($files as $file) {
+//    @unlink($file);
+//}

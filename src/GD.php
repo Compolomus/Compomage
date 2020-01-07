@@ -26,6 +26,29 @@ class GD extends AbstractImage implements ImageInterface
         $this->init($image);
     }
 
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface
+    {
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
+        imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
+        $background = new Image($temp->getRealPath(), Image::GD);
+
+        if ($rotate = ($this->orientation === 'vertical')) {
+            $this->rotate(90);
+        }
+
+        $this->resizeByWidth($width);
+        $background->watermark($this, 'CENTER');
+
+        if ($rotate) {
+            $background->rotate(-90);
+        }
+
+        $this->setImage($background->getImage());
+        $this->setSizes();
+
+        return $this;
+    }
+
     public function flip(): ImageInterface
     {
         imageflip($this->getImage(), IMG_FLIP_VERTICAL);
@@ -160,6 +183,7 @@ class GD extends AbstractImage implements ImageInterface
     {
         $this->setWidth(imagesx($this->getImage()));
         $this->setHeight(imagesy($this->getImage()));
+        $this->setOrientation();
     }
 
     /**
@@ -205,7 +229,7 @@ class GD extends AbstractImage implements ImageInterface
      */
     public function __toString(): string
     {
-        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . rand()), 'w+');
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
         imagepng($this->getImage(), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
         $temp->rewind();
         $tmp = '';
@@ -279,12 +303,12 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface $watermark
      * @param int $x
      * @param int $y
      * @return ImageInterface
      */
-    protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
+    protected function prepareWatermark($watermark, int $x, int $y): ImageInterface
     {
         imagealphablending($this->getImage(), true);
         imagesavealpha($this->getImage(), true);

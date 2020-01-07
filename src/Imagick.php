@@ -57,6 +57,7 @@ class Imagick extends AbstractImage implements ImageInterface
         $args = $this->getImage()->getImageGeometry();
         $this->setWidth($args['width']);
         $this->setHeight($args['height']);
+        $this->setOrientation();
     }
 
     /**
@@ -249,7 +250,7 @@ class Imagick extends AbstractImage implements ImageInterface
      * @return ImageInterface
      * @throws Exception
      */
-    protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
+    protected function prepareWatermark($watermark, int $x, int $y): ImageInterface
     {
         $watermark->getImage()->evaluateImage(\Imagick::EVALUATE_MULTIPLY, 1, \Imagick::CHANNEL_ALPHA);
         $this->getImage()->compositeImage($watermark->getImage(), \Imagick::COMPOSITE_DISSOLVE, $x, $y);

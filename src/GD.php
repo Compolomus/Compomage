@@ -26,18 +26,13 @@ class GD extends AbstractImage implements ImageInterface
         $this->init($image);
     }
 
-    private function setBackground(int $width, Image $background): ImageInterface
+    private function setBackground(int $width, int $height, Image $background): ImageInterface
     {
-        if ($rotate = ($this->orientation === 'vertical')) {
-            $this->rotate(90);
-        }
+        $this->orientation === 'vertical'
+            ? $this->resizeByHeight($height)
+            : $this->resizeByWidth($width);
 
-        $this->resizeByWidth($width);
         $background->watermark($this, 'CENTER');
-
-        if ($rotate) {
-            $background->rotate(-90);
-        }
 
         $this->setImage($background->getImage());
         $this->setSizes();
@@ -51,7 +46,7 @@ class GD extends AbstractImage implements ImageInterface
         imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
         $background = new Image($temp->getRealPath(), Image::GD);
 
-        return $this->setBackground($width, $background);
+        return $this->setBackground($width, $height, $background);
     }
 
     public function resizeByBlurBackground(int $width, int $height): ImageInterface
@@ -59,7 +54,7 @@ class GD extends AbstractImage implements ImageInterface
         $background = new Image(base64_encode((string) $this), Image::GD);
         $background->blur()->resize($width, $height);
 
-        return $this->setBackground($width, $background);
+        return $this->setBackground($width, $height, $background);
     }
 
     private function compareRangeValue(int $value, int $range): bool

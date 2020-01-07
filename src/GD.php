@@ -26,12 +26,8 @@ class GD extends AbstractImage implements ImageInterface
         $this->init($image);
     }
 
-    public function resizeByTransparentBackground(int $width, int $height): ImageInterface
+    private function setBackground(int $width, Image $background): ImageInterface
     {
-        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
-        imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
-        $background = new Image($temp->getRealPath(), Image::GD);
-
         if ($rotate = ($this->orientation === 'vertical')) {
             $this->rotate(90);
         }
@@ -45,6 +41,70 @@ class GD extends AbstractImage implements ImageInterface
 
         $this->setImage($background->getImage());
         $this->setSizes();
+
+        return $this;
+    }
+
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface
+    {
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
+        imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
+        $background = new Image($temp->getRealPath(), Image::GD);
+
+        return $this->setBackground($width, $background);
+    }
+
+    public function resizeByBlurBackground(int $width, int $height): ImageInterface
+    {
+        $background = new Image(base64_encode((string) $this), Image::GD);
+        $background->blur()->resize($width, $height);
+
+        return $this->setBackground($width, $background);
+    }
+
+    private function compareRangeValue(int $value, int $range): bool
+    {
+        return in_array(abs($value), range(0, $range), true);
+    }
+
+    public function brightness(int $level): ImageInterface
+    {
+        if (!$this->compareRangeValue($level, 255))
+        {
+            throw new InvalidArgumentException('Wrong brightness level, range -255 - 255, ' . $level . ' given');
+        }
+        imagefilter($this->getImage(), IMG_FILTER_BRIGHTNESS, $level);
+
+        return $this;
+    }
+
+    public function contrast(int $level): ImageInterface
+    {
+        if (!$this->compareRangeValue($level, 100))
+        {
+            throw new InvalidArgumentException('Wrong contrast level, range -100 - 100, ' . $level . ' given');
+        }
+
+        imagefilter($this->getImage(), IMG_FILTER_CONTRAST, $level);
+
+        return $this;
+    }
+
+    public function negate(): ImageInterface
+    {
+        imagefilter($this->getImage(), IMG_FILTER_NEGATE);
+
+        return $this;
+    }
+
+    public function blur(): ImageInterface
+    {
+        for ($i = 0; $i < 30; $i++) {
+            if ($i % 5 === 0) {
+                imagefilter($this->getImage(), IMG_FILTER_SMOOTH, -7);
+            }
+            imagefilter($this->getImage(), IMG_FILTER_GAUSSIAN_BLUR);
+        }
 
         return $this;
     }

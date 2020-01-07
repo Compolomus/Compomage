@@ -2,7 +2,6 @@
 
 namespace Compolomus\Compomage;
 
-use Compolomus\Compomage\Interfaces\ImageInterface;
 use Exception;
 use InvalidArgumentException;
 
@@ -28,7 +27,6 @@ use InvalidArgumentException;
  * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT)
  * @method Image getBase64(): string
  * @method Image thumbnail(int $width, int $height): ImageInterface
- *
  * @method Image resizeByTransparentBackground(int $width, int $height): ImageInterface
  */
 

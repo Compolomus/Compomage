@@ -253,4 +253,40 @@ class Imagick2 extends AbstractImage
         // TODO: Implement resizeByBlurBackground() method.
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function brightness(int $level): ImageInterface
+    {
+        // TODO: Implement brightness() method.
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function contrast(int $level): ImageInterface
+    {
+        // TODO: Implement contrast() method.
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function negate(): ImageInterface
+    {
+        // TODO: Implement negate() method.
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function blur(): ImageInterface
+    {
+        // TODO: Implement blur() method.
+        return $this;
+    }
 }

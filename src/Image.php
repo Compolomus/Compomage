@@ -9,30 +9,30 @@ use InvalidArgumentException;
  * Class Image
  * @package Compolomus\Compomage
  * @method Image save(string $filename): bool
- * @method Image resize(int $width, int $height): ImageInterface
- * @method Image crop(int $width, int $height, int $x, int $y): ImageInterface
- * @method Image rotate(int $angle = 90): ImageInterface
- * @method Image flip(): ImageInterface
- * @method Image flop(): ImageInterface
- * @method Image getImage()
- * @method Image setImage($image)
- * @method Image getWidth(): int
- * @method Image getHeight(): int
- * @method Image watermark($watermark, string $position): ImageInterface
  * @method Image __toString(): string
+ * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT) // bug
+ * @method Image getBase64(): string
+ * @method Image resize(int $width, int $height): ImageInterface
  * @method Image resizeByHeight(int $height): ImageInterface
  * @method Image resizeByWidth(int $width): ImageInterface
  * @method Image resizeByPercent(int $percent): ImageInterface
  * @method Image resizeBy(string $mode, int $param): ImageInterface
- * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT)
- * @method Image getBase64(): string
- * @method Image thumbnail(int $width, int $height): ImageInterface
  * @method Image resizeByTransparentBackground(int $width, int $height): ImageInterface
  * @method Image resizeByBlurBackground(int $width, int $height): ImageInterface
+ * @method Image crop(int $width, int $height, int $x, int $y): ImageInterface
+ * @method Image rotate(int $angle = 90): ImageInterface
+ * @method Image flip(): ImageInterface
+ * @method Image flop(): ImageInterface
  * @method Image brightness(int $level): ImageInterface
  * @method Image contrast(int $level): ImageInterface
  * @method Image negate(): ImageInterface
  * @method Image blur(): ImageInterface
+ * @method Image grayscale(): ImageInterface
+ * @method Image getImage()
+ * @method Image getWidth(): int
+ * @method Image getHeight(): int
+ * @method Image watermark($watermark, string $position): ImageInterface
+ * @method Image thumbnail(int $width, int $height): ImageInterface
  */
 
 class Image

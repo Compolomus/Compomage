@@ -9,7 +9,7 @@ use LogicException;
 use RangeException;
 use SplFileObject;
 
-class GD extends AbstractImage// implements ImageInterface
+class GD extends AbstractImage
 {
     /**
      * GD constructor.
@@ -74,7 +74,6 @@ class GD extends AbstractImage// implements ImageInterface
         {
             throw new InvalidArgumentException('Wrong contrast level, range -100 - 100, ' . $level . ' given');
         }
-
         imagefilter($this->getImage(), IMG_FILTER_CONTRAST, $level);
 
         return $this;
@@ -152,8 +151,8 @@ class GD extends AbstractImage// implements ImageInterface
         imagecopymerge(
             $this->getImage(),
             $image = $this->prepareImage($text, $font),
-            (int)((($this->getWidth() - imagesx($image)) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
-            (int)((($this->getHeight() - imagesy($image)) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY'],
+            (int) ((($this->getWidth() - imagesx($image)) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int) ((($this->getHeight() - imagesy($image)) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY'],
             0,
             0,
             $this->getWidth(),
@@ -181,8 +180,8 @@ class GD extends AbstractImage// implements ImageInterface
         $maxX = max([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
         $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
-        $textX = (int)abs($minX) + 1;
-        $textY = (int)abs($minY) + 1;
+        $textX = (int) abs($minX) + 1;
+        $textY = (int) abs($minY) + 1;
         $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
         imagecolortransparent($image, $white = imagecolorallocate($image, 0, 0, 0));
         imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
@@ -313,8 +312,8 @@ class GD extends AbstractImage// implements ImageInterface
         imagecopyresampled(
             $newimage = $this->newImage($width, $height),
             $this->getImage(),
-            0 - (int)(($newWidth - $width) / 2),
-            0 - (int)(($newHeight - $height) / 2),
+            0 - (int) (($newWidth - $width) / 2),
+            0 - (int) (($newHeight - $height) / 2),
             0,
             0,
             $newWidth,
@@ -365,8 +364,8 @@ class GD extends AbstractImage// implements ImageInterface
             $y,
             0,
             0,
-            $width = (int)$watermark->getWidth(),
-            $height = (int)$watermark->getHeight(),
+            $width = $watermark->getWidth(),
+            $height = $watermark->getHeight(),
             $width,
             $height
         );

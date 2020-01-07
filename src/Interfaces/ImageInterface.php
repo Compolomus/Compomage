@@ -31,7 +31,32 @@ interface ImageInterface
      */
     public function crop(int $width, int $height, int $x, int $y): ImageInterface;
 
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function brightness(int $level): ImageInterface;
 
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function contrast(int $level): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function negate(): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function blur(): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function grayscale(): ImageInterface;
 
     /**
      * @return ImageInterface

@@ -168,8 +168,8 @@ abstract class AbstractImage implements ImageInterface
 
         return $this->prepareWatermark(
             $watermark,
-            (int)((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
-            (int)((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
+            (int) ((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int) ((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
         );
     }
 
@@ -192,8 +192,8 @@ abstract class AbstractImage implements ImageInterface
         $newWidth = $width;
 
         $this->getWidth() / $this->getHeight() >= $width / $height
-            ? $newWidth = (int)($this->getWidth() / ($this->getHeight() / $height))
-            : $newHeight = (int)($this->getHeight() / ($this->getWidth() / $width));
+            ? $newWidth = (int) ($this->getWidth() / ($this->getHeight() / $height))
+            : $newHeight = (int) ($this->getHeight() / ($this->getWidth() / $width));
 
         return $this->prepareThumbnail($width, $height, $newWidth, $newHeight);
     }
@@ -210,7 +210,7 @@ abstract class AbstractImage implements ImageInterface
      */
     public function getBase64(): string
     {
-        return base64_encode((string)$this);
+        return base64_encode((string) $this);
 
     }
 

@@ -9,7 +9,7 @@ use LogicException;
 use RuntimeException;
 use SplFileObject;
 
-abstract class AbstractImage
+abstract class AbstractImage implements ImageInterface
 {
     protected const POSITIONS = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
@@ -23,21 +23,53 @@ abstract class AbstractImage
         'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
     ];
 
+    protected $image;
+
     protected $width;
 
     protected $height;
 
     protected $orientation;
 
+    /**
+     * @param int $value
+     * @param int $range
+     * @return bool
+     */
+    protected function compareRangeValue(int $value, int $range): bool
+    {
+        return in_array(abs($value), range(0, $range), true);
+    }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @param Image $background
+     * @return ImageInterface
+     */
+    protected function setBackground(int $width, int $height, Image $background): ImageInterface
+    {
+        $this->orientation === 'vertical'
+            ? $this->resizeByHeight($height)
+            : $this->resizeByWidth($width);
+
+        $background->watermark($this, 'CENTER');
+
+        $this->setImage($background->getImage());
+        $this->setSizes();
+
+        return $this;
+    }
+
     protected function setOrientation(): void
     {
         $this->orientation = $this->getWidth() < $this->getHeight() ? 'vertical' : 'horizontal';
     }
 
-    /**
-     * @return \Imagick|resource
-     */
-    abstract public function getImage();
+    public function getOrientation(): string
+    {
+        return $this->orientation;
+    }
 
     /**
      * @param string $mode
@@ -67,13 +99,6 @@ abstract class AbstractImage
     {
         return $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
     }
-
-    /**
-     * @param int $width
-     * @param int $height
-     * @return ImageInterface
-     */
-    abstract protected function resize(int $width, int $height): ImageInterface;
 
     /**
      * @return int
@@ -126,6 +151,8 @@ abstract class AbstractImage
         $height = $this->getHeight() * ($percent / 100);
         return $this->resize($width, $height);
     }
+
+    abstract protected function newImage(int $width, int $height);
 
     /**
      * @param ImageInterface|Image $watermark
@@ -188,14 +215,17 @@ abstract class AbstractImage
     }
 
     /**
-     * @return string
-     */
-    abstract public function __toString(): string;
-
-    /**
      * @param $image
      */
-    abstract protected function setImage($image): void;
+    protected function setImage($image): void
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
 
     /**
      * System method

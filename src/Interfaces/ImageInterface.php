@@ -3,6 +3,7 @@
 namespace Compolomus\Compomage\Interfaces;
 
 use Compolomus\Compomage\Image;
+use Imagick;
 
 interface ImageInterface
 {
@@ -29,6 +30,8 @@ interface ImageInterface
      * @return ImageInterface
      */
     public function crop(int $width, int $height, int $x, int $y): ImageInterface;
+
+
 
     /**
      * @return ImageInterface
@@ -59,6 +62,15 @@ interface ImageInterface
      * @return ImageInterface
      */
     public function thumbnail(int $width, int $height): ImageInterface;
+
+    /**
+     * @return Imagick|resource
+     */
+    public function getImage();
+
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface;
+
+    public function resizeByBlurBackground(int $width, int $height): ImageInterface;
 
     /**
      * @return string

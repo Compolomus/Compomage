@@ -9,13 +9,8 @@ use LogicException;
 use RangeException;
 use SplFileObject;
 
-class GD extends AbstractImage implements ImageInterface
+class GD extends AbstractImage// implements ImageInterface
 {
-    /**
-     * @var resource
-     */
-    private $image;
-
     /**
      * GD constructor.
      * @param string $image
@@ -26,29 +21,26 @@ class GD extends AbstractImage implements ImageInterface
         $this->init($image);
     }
 
-    private function setBackground(int $width, int $height, Image $background): ImageInterface
-    {
-        $this->orientation === 'vertical'
-            ? $this->resizeByHeight($height)
-            : $this->resizeByWidth($width);
-
-        $background->watermark($this, 'CENTER');
-
-        $this->setImage($background->getImage());
-        $this->setSizes();
-
-        return $this;
-    }
-
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws Exception
+     */
     public function resizeByTransparentBackground(int $width, int $height): ImageInterface
     {
         $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
         imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
-        $background = new Image($temp->getRealPath(), Image::GD);
 
-        return $this->setBackground($width, $height, $background);
+        return $this->setBackground($width, $height, new Image($temp->getRealPath(), Image::GD));
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws Exception
+     */
     public function resizeByBlurBackground(int $width, int $height): ImageInterface
     {
         $background = new Image(base64_encode((string) $this), Image::GD);
@@ -57,11 +49,10 @@ class GD extends AbstractImage implements ImageInterface
         return $this->setBackground($width, $height, $background);
     }
 
-    private function compareRangeValue(int $value, int $range): bool
-    {
-        return in_array(abs($value), range(0, $range), true);
-    }
-
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
     public function brightness(int $level): ImageInterface
     {
         if (!$this->compareRangeValue($level, 255))
@@ -73,6 +64,10 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
     public function contrast(int $level): ImageInterface
     {
         if (!$this->compareRangeValue($level, 100))
@@ -85,6 +80,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return ImageInterface
+     */
     public function negate(): ImageInterface
     {
         imagefilter($this->getImage(), IMG_FILTER_NEGATE);
@@ -92,6 +90,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return ImageInterface
+     */
     public function blur(): ImageInterface
     {
         for ($i = 0; $i < 30; $i++) {
@@ -104,6 +105,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return ImageInterface
+     */
     public function flip(): ImageInterface
     {
         imageflip($this->getImage(), IMG_FLIP_VERTICAL);
@@ -112,18 +116,8 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @return resource
+     * @return ImageInterface
      */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    public function setImage($image): void
-    {
-        $this->image = $image;
-    }
-
     public function flop(): ImageInterface
     {
         imageflip($this->getImage(), IMG_FLIP_HORIZONTAL);
@@ -131,6 +125,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return ImageInterface
+     */
     public function grayscale(): ImageInterface
     {
         imagefilter($this->getImage(), IMG_FILTER_GRAYSCALE);
@@ -207,7 +204,7 @@ class GD extends AbstractImage implements ImageInterface
      * @param int $height
      * @return resource
      */
-    private function newImage(int $width, int $height)
+    protected function newImage(int $width, int $height)
     {
         $newimage = imagecreatetruecolor($width, $height);
         $transparent = imagecolorallocatealpha($newimage, 255, 255, 255, 127);
@@ -286,14 +283,8 @@ class GD extends AbstractImage implements ImageInterface
     {
         $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
         imagepng($this->getImage(), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
-        $temp->rewind();
-        $tmp = '';
 
-        foreach ($temp as $line) {
-            $tmp .= $line;
-        }
-
-        return trim($tmp);
+        return trim(file_get_contents($temp->getRealPath()));
     }
 
     /**

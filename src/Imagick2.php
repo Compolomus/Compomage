@@ -4,17 +4,14 @@ namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
 use Exception;
+use imagick;
+use ImagickDraw;
 use ImagickException;
+use ImagickPixel;
 use InvalidArgumentException;
 
-class Imagick extends AbstractImage implements ImageInterface
+class Imagick2 extends AbstractImage
 {
-
-    /**
-     * @var \Imagick
-     */
-    private $image;
-
     /**
      * Imagick constructor.
      * @param string $image
@@ -39,19 +36,6 @@ class Imagick extends AbstractImage implements ImageInterface
         return $this;
     }
 
-    /**
-     * @return \Imagick
-     */
-    public function getImage(): \Imagick
-    {
-        return $this->image;
-    }
-
-    public function setImage($image): void
-    {
-        $this->image = $image;
-    }
-
     protected function setSizes(): void
     {
         $args = $this->getImage()->getImageGeometry();
@@ -66,7 +50,7 @@ class Imagick extends AbstractImage implements ImageInterface
      */
     public function rotate(int $angle = 90): ImageInterface
     {
-        $this->getImage()->rotateImage(new \ImagickPixel('transparent'), $angle);
+        $this->getImage()->rotateImage(new ImagickPixel('transparent'), $angle);
         $this->setSizes();
 
         return $this;
@@ -94,7 +78,7 @@ class Imagick extends AbstractImage implements ImageInterface
 
     public function grayscale(): ImageInterface
     {
-        $this->getImage()->transformimagecolorspace(\imagick::COLORSPACE_GRAY);
+        $this->getImage()->transformimagecolorspace(Imagick::COLORSPACE_GRAY);
         $this->getImage()->separateImageChannel(1);
 
         return $this;
@@ -111,21 +95,21 @@ class Imagick extends AbstractImage implements ImageInterface
     public function copyright(string $text, string $font = 'Courier', string $position = 'SouthWest'): ImageInterface
     {
         $positions = [
-            'NORTHWEST' => \Imagick::GRAVITY_NORTHWEST,
-            'NORTH' => \Imagick::GRAVITY_NORTH,
-            'NORTHEAST' => \Imagick::GRAVITY_NORTHEAST,
-            'WEST' => \Imagick::GRAVITY_WEST,
-            'CENTER' => \Imagick::GRAVITY_CENTER,
-            'SOUTHWEST' => \Imagick::GRAVITY_SOUTHWEST,
-            'SOUTH' => \Imagick::GRAVITY_SOUTH,
-            'SOUTHEAST' => \Imagick::GRAVITY_SOUTHEAST,
-            'EAST' => \Imagick::GRAVITY_EAST
+            'NORTHWEST' => Imagick::GRAVITY_NORTHWEST,
+            'NORTH' => Imagick::GRAVITY_NORTH,
+            'NORTHEAST' => Imagick::GRAVITY_NORTHEAST,
+            'WEST' => Imagick::GRAVITY_WEST,
+            'CENTER' => Imagick::GRAVITY_CENTER,
+            'SOUTHWEST' => Imagick::GRAVITY_SOUTHWEST,
+            'SOUTH' => Imagick::GRAVITY_SOUTH,
+            'SOUTHEAST' => Imagick::GRAVITY_SOUTHEAST,
+            'EAST' => Imagick::GRAVITY_EAST
         ];
-        if (!array_key_exists(strtoupper($position), $positions) || !\in_array($font, $this->getFontsList(), true)) {
+        if (!array_key_exists(strtoupper($position), $positions) || !in_array($font, $this->getFontsList(), true)) {
             throw new InvalidArgumentException('Does not support font or wrong position');
         }
         $this->getImage()->compositeImage($this->prepareImage($text, $positions[strtoupper($position)], $font),
-            \Imagick::COMPOSITE_DISSOLVE, 0, 0);
+            Imagick::COMPOSITE_DISSOLVE, 0, 0);
 
         return $this;
     }
@@ -139,28 +123,28 @@ class Imagick extends AbstractImage implements ImageInterface
      * @param string $text
      * @param int $position
      * @param string $font
-     * @return \Imagick
+     * @return Imagick
      * @throws ImagickException
      */
-    private function prepareImage(string $text, int $position, string $font): \Imagick
+    private function prepareImage(string $text, int $position, string $font): Imagick
     {
-        $image = new \Imagick();
-        $mask = new \Imagick();
-        $draw = new \ImagickDraw();
-        $image->newImage($this->getWidth(), $this->getHeight(), new \ImagickPixel('grey30'));
-        $mask->newImage($this->getWidth(), $this->getHeight(), new \ImagickPixel('black'));
+        $image = new Imagick();
+        $mask = new Imagick();
+        $draw = new ImagickDraw();
+        $image->newImage($this->getWidth(), $this->getHeight(), new ImagickPixel('grey30'));
+        $mask->newImage($this->getWidth(), $this->getHeight(), new ImagickPixel('black'));
         $draw->setFont($font);
         $draw->setFontSize(20);
-        $draw->setFillColor(new \ImagickPixel('grey70'));
+        $draw->setFillColor(new ImagickPixel('grey70'));
         $draw->setGravity($position);
         $image->annotateImage($draw, 10, 12, 0, $text);
-        $draw->setFillColor(new \ImagickPixel('white'));
+        $draw->setFillColor(new ImagickPixel('white'));
         $mask->annotateImage($draw, 11, 13, 0, $text);
         $mask->annotateImage($draw, 10, 12, 0, $text);
-        $draw->setFillColor(new \ImagickPixel('black'));
+        $draw->setFillColor(new ImagickPixel('black'));
         $mask->annotateImage($draw, 9, 11, 0, $text);
         $mask->setImageMatte(false);
-        $image->compositeImage($mask, \Imagick::COMPOSITE_COPYOPACITY, 0, 0);
+        $image->compositeImage($mask, Imagick::COMPOSITE_COPYOPACITY, 0, 0);
 
         return $image;
     }
@@ -213,14 +197,14 @@ class Imagick extends AbstractImage implements ImageInterface
      */
     protected function tmp(string $source): ImageInterface
     {
-        $image = new \Imagick;
+        $image = new Imagick;
         if ($image->readImageBlob($source)) {
-            if ($image->getImageAlphaChannel() !== \Imagick::ALPHACHANNEL_ACTIVATE) {
-                $image->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
+            if ($image->getImageAlphaChannel() !== Imagick::ALPHACHANNEL_ACTIVATE) {
+                $image->setImageAlphaChannel(Imagick::ALPHACHANNEL_SET);
             }
         }
         $background = $this->newImage($image->getImageWidth(), $image->getImageHeight());
-        $image->compositeImage($background, \imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
+        $image->compositeImage($background, Imagick::COMPOSITE_OVER, 0, 0); //Imagick::COMPOSITE_DISSOLVE
         $this->setImage($image);
         $this->getImage()->setFormat('png'); // save transparent
         $this->setSizes();
@@ -231,14 +215,14 @@ class Imagick extends AbstractImage implements ImageInterface
     /**
      * @param int $width
      * @param int $height
-     * @return \Imagick
+     * @return Imagick
      * @throws ImagickException
      */
-    private function newImage(int $width, int $height): \Imagick
+    protected function newImage(int $width, int $height): Imagick
     {
-        $background = new \Imagick;
-        $background->newImage($width, $height, new \ImagickPixel('transparent'));
-        $background->setImageBackgroundColor(new \ImagickPixel('transparent'));
+        $background = new Imagick;
+        $background->newImage($width, $height, new ImagickPixel('transparent'));
+        $background->setImageBackgroundColor(new ImagickPixel('transparent'));
 
         return $background;
     }
@@ -252,9 +236,21 @@ class Imagick extends AbstractImage implements ImageInterface
      */
     protected function prepareWatermark($watermark, int $x, int $y): ImageInterface
     {
-        $watermark->getImage()->evaluateImage(\Imagick::EVALUATE_MULTIPLY, 1, \Imagick::CHANNEL_ALPHA);
-        $this->getImage()->compositeImage($watermark->getImage(), \Imagick::COMPOSITE_DISSOLVE, $x, $y);
+        $watermark->getImage()->evaluateImage(Imagick::EVALUATE_MULTIPLY, 1, Imagick::CHANNEL_ALPHA);
+        $this->getImage()->compositeImage($watermark->getImage(), Imagick::COMPOSITE_DISSOLVE, $x, $y);
 
+        return $this;
+    }
+
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface
+    {
+        // TODO: Implement resizeByTransparentBackground() method.
+        return $this;
+    }
+
+    public function resizeByBlurBackground(int $width, int $height): ImageInterface
+    {
+        // TODO: Implement resizeByBlurBackground() method.
         return $this;
     }
 }

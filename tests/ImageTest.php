@@ -43,7 +43,7 @@ class ImageTest extends TestCase
     {
         try {
             $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-            $this->assertInternalType('object', $obj);
+            $this->assertIsObject($obj);
             $this->assertInstanceOf(Image::class, $obj);
         } catch (Exception $e) {
             $this->assertContains('Must be initialized ', $e->getMessage());
@@ -66,7 +66,7 @@ class ImageTest extends TestCase
     {
         try {
             $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
-            $this->assertInternalType('object', $obj);
+            $this->assertIsObject($obj);
             $this->assertInstanceOf(Image::class, $obj);
             $this->assertInstanceOf(Imagick::class, $obj->getImage());
         } catch (Exception $e) {
@@ -116,7 +116,7 @@ class ImageTest extends TestCase
 
     public function testGetFontsList(): void
     {
-        $this->assertInternalType('array', $this->getImage('Imagick')->getFontsList());
+        $this->assertIsArray($this->getImage('Imagick')->getFontsList());
     }
 
     public function testGetBase64(): void

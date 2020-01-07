@@ -28,6 +28,11 @@ use InvalidArgumentException;
  * @method Image getBase64(): string
  * @method Image thumbnail(int $width, int $height): ImageInterface
  * @method Image resizeByTransparentBackground(int $width, int $height): ImageInterface
+ * @method Image resizeByBlurBackground(int $width, int $height): ImageInterface
+ * @method Image brightness(int $level): ImageInterface
+ * @method Image contrast(int $level): ImageInterface
+ * @method Image negate(): ImageInterface
+ * @method Image blur(): ImageInterface
  */
 
 class Image
@@ -62,7 +67,7 @@ class Image
     {
         if ($mode === self::IMAGICK || ($mode === self::AUTO && extension_loaded('imagick') === true)) {
             $this->class = self::IMAGICK;
-            $this->object = new Imagick($filename);
+            $this->object = new Imagick2($filename);
             return;
         }
         $this->object = new GD($filename);

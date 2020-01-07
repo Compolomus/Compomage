@@ -3,24 +3,110 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
+use RangeException;
+use SplFileObject;
 
-class GD extends AbstractImage implements ImageInterface
+class GD extends AbstractImage
 {
-    /**
-     * @var resource
-     */
-    private $image;
-
     /**
      * GD constructor.
      * @param string $image
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $image)
     {
         $this->init($image);
     }
 
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws Exception
+     */
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface
+    {
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
+        imagepng($this->newImage($width, $height), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
+
+        return $this->setBackground($width, $height, new Image($temp->getRealPath(), Image::GD));
+    }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     * @throws Exception
+     */
+    public function resizeByBlurBackground(int $width, int $height): ImageInterface
+    {
+        $background = new Image(base64_encode((string) $this), Image::GD);
+        $background->blur()->resize($width, $height);
+
+        return $this->setBackground($width, $height, $background);
+    }
+
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function brightness(int $level): ImageInterface
+    {
+        if (!$this->compareRangeValue($level, 255))
+        {
+            throw new InvalidArgumentException('Wrong brightness level, range -255 - 255, ' . $level . ' given');
+        }
+        imagefilter($this->getImage(), IMG_FILTER_BRIGHTNESS, $level);
+
+        return $this;
+    }
+
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function contrast(int $level): ImageInterface
+    {
+        if (!$this->compareRangeValue($level, 100))
+        {
+            throw new InvalidArgumentException('Wrong contrast level, range -100 - 100, ' . $level . ' given');
+        }
+        imagefilter($this->getImage(), IMG_FILTER_CONTRAST, $level);
+
+        return $this;
+    }
+
+    /**
+     * @return ImageInterface
+     */
+    public function negate(): ImageInterface
+    {
+        imagefilter($this->getImage(), IMG_FILTER_NEGATE);
+
+        return $this;
+    }
+
+    /**
+     * @return ImageInterface
+     */
+    public function blur(): ImageInterface
+    {
+        for ($i = 0; $i < 30; $i++) {
+            if ($i % 5 === 0) {
+                imagefilter($this->getImage(), IMG_FILTER_SMOOTH, -7);
+            }
+            imagefilter($this->getImage(), IMG_FILTER_GAUSSIAN_BLUR);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ImageInterface
+     */
     public function flip(): ImageInterface
     {
         imageflip($this->getImage(), IMG_FLIP_VERTICAL);
@@ -29,18 +115,8 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @return resource
+     * @return ImageInterface
      */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    public function setImage($image): void
-    {
-        $this->image = $image;
-    }
-
     public function flop(): ImageInterface
     {
         imageflip($this->getImage(), IMG_FLIP_HORIZONTAL);
@@ -48,6 +124,9 @@ class GD extends AbstractImage implements ImageInterface
         return $this;
     }
 
+    /**
+     * @return ImageInterface
+     */
     public function grayscale(): ImageInterface
     {
         imagefilter($this->getImage(), IMG_FILTER_GRAYSCALE);
@@ -60,20 +139,20 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $font
      * @param string $position
      * @return $this
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function copyright(string $text, string $font, string $position = 'SouthWest'): ImageInterface
     {
         if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
-            throw new \InvalidArgumentException('Wrong position');
+            throw new InvalidArgumentException('Wrong position');
         }
 
         imagecopymerge(
             $this->getImage(),
             $image = $this->prepareImage($text, $font),
-            (int)((($this->getWidth() - imagesx($image)) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
-            (int)((($this->getHeight() - imagesy($image)) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY'],
+            (int) ((($this->getWidth() - imagesx($image)) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int) ((($this->getHeight() - imagesy($image)) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY'],
             0,
             0,
             $this->getWidth(),
@@ -88,21 +167,21 @@ class GD extends AbstractImage implements ImageInterface
      * @param string $text
      * @param string $font
      * @return resource
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     private function prepareImage(string $text, string $font)
     {
         if (!$coordinates = imagettfbbox($fontSize = 15, 0, $font, $text)) {
-            throw new \InvalidArgumentException('Does not support font');
+            throw new InvalidArgumentException('Does not support font');
         }
 
         $minX = min([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $maxX = max([$coordinates[0], $coordinates[2], $coordinates[4], $coordinates[6]]);
         $minY = min([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
         $maxY = max([$coordinates[1], $coordinates[3], $coordinates[5], $coordinates[7]]);
-        $textX = (int)abs($minX) + 1;
-        $textY = (int)abs($minY) + 1;
+        $textX = (int) abs($minX) + 1;
+        $textY = (int) abs($minY) + 1;
         $image = $this->newImage($maxX - $minX + 2, $maxY - $minY + 2);
         imagecolortransparent($image, $white = imagecolorallocate($image, 0, 0, 0));
         imagefilledrectangle($image, 0, 0, $this->getWidth(), 20, $white);
@@ -124,7 +203,7 @@ class GD extends AbstractImage implements ImageInterface
      * @param int $height
      * @return resource
      */
-    private function newImage(int $width, int $height)
+    protected function newImage(int $width, int $height)
     {
         $newimage = imagecreatetruecolor($width, $height);
         $transparent = imagecolorallocatealpha($newimage, 255, 255, 255, 127);
@@ -155,6 +234,7 @@ class GD extends AbstractImage implements ImageInterface
     {
         $this->setWidth(imagesx($this->getImage()));
         $this->setHeight(imagesy($this->getImage()));
+        $this->setOrientation();
     }
 
     /**
@@ -194,22 +274,16 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @throws \LogicException
-     * @throws \RangeException
+     * @throws LogicException
+     * @throws RangeException
      * @return string
      */
     public function __toString(): string
     {
-        $temp = new \SplFileObject(tempnam(sys_get_temp_dir(), 'image' . rand()), 'w+');
+        $temp = new SplFileObject(tempnam(sys_get_temp_dir(), 'image' . mt_rand()), 'w+');
         imagepng($this->getImage(), $temp->getRealPath(), 9, PNG_ALL_FILTERS);
-        $temp->rewind();
-        $tmp = '';
 
-        foreach ($temp as $line) {
-            $tmp .= $line;
-        }
-
-        return trim($tmp);
+        return trim(file_get_contents($temp->getRealPath()));
     }
 
     /**
@@ -219,7 +293,7 @@ class GD extends AbstractImage implements ImageInterface
      */
     public function save(string $filename, $quality = 100): bool
     {
-        return imagepng($this->getImage(), $filename . '.png', (int)($quality / 11), PNG_ALL_FILTERS);
+        return imagepng($this->getImage(), $filename . '.png', (int) ($quality / 11), PNG_ALL_FILTERS);
     }
 
     /**
@@ -238,8 +312,8 @@ class GD extends AbstractImage implements ImageInterface
         imagecopyresampled(
             $newimage = $this->newImage($width, $height),
             $this->getImage(),
-            0 - (int)(($newWidth - $width) / 2),
-            0 - (int)(($newHeight - $height) / 2),
+            0 - (int) (($newWidth - $width) / 2),
+            0 - (int) (($newHeight - $height) / 2),
             0,
             0,
             $newWidth,
@@ -256,13 +330,13 @@ class GD extends AbstractImage implements ImageInterface
     /**
      * @param string $source
      * @return ImageInterface
-     * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function tmp(string $source): ImageInterface
     {
-        if (@!\is_resource($image = @imagecreatefromstring($source))) {
-            throw new \InvalidArgumentException('Image create failed');
+        if (@!is_resource($image = @imagecreatefromstring($source))) {
+            throw new InvalidArgumentException('Image create failed');
         }
         $this->setImage($image);
         $this->setSizes();
@@ -274,12 +348,12 @@ class GD extends AbstractImage implements ImageInterface
     }
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface $watermark
      * @param int $x
      * @param int $y
      * @return ImageInterface
      */
-    protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface
+    protected function prepareWatermark($watermark, int $x, int $y): ImageInterface
     {
         imagealphablending($this->getImage(), true);
         imagesavealpha($this->getImage(), true);
@@ -290,8 +364,8 @@ class GD extends AbstractImage implements ImageInterface
             $y,
             0,
             0,
-            $width = (int)$watermark->getWidth(),
-            $height = (int)$watermark->getHeight(),
+            $width = $watermark->getWidth(),
+            $height = $watermark->getHeight(),
             $width,
             $height
         );

@@ -25,8 +25,8 @@ require __DIR__ . '/vendor/autoload.php';
 /* Local file */
 $img = new Image('./examples/crop/bee.jpg'); // Auto check Imagick or GD default
 
-$img->rotate(45)
-    ->grayscale()
+$img->grayscale()
+    ->rotate(45)
     ->flop();
 
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';

@@ -3,6 +3,7 @@
 namespace Compolomus\Compomage\Interfaces;
 
 use Compolomus\Compomage\Image;
+use Imagick;
 
 interface ImageInterface
 {
@@ -31,6 +32,33 @@ interface ImageInterface
     public function crop(int $width, int $height, int $x, int $y): ImageInterface;
 
     /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function brightness(int $level): ImageInterface;
+
+    /**
+     * @param int $level
+     * @return ImageInterface
+     */
+    public function contrast(int $level): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function negate(): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function blur(): ImageInterface;
+
+    /**
+     * @return ImageInterface
+     */
+    public function grayscale(): ImageInterface;
+
+    /**
      * @return ImageInterface
      */
     public function flip(): ImageInterface;
@@ -47,11 +75,11 @@ interface ImageInterface
     public function rotate(int $angle = 90): ImageInterface;
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface|Image $watermark
      * @param string $position
      * @return ImageInterface
      */
-    public function watermark(Image $watermark, string $position): ImageInterface;
+    public function watermark($watermark, string $position): ImageInterface;
 
     /**
      * @param int $width
@@ -59,6 +87,15 @@ interface ImageInterface
      * @return ImageInterface
      */
     public function thumbnail(int $width, int $height): ImageInterface;
+
+    /**
+     * @return Imagick|resource
+     */
+    public function getImage();
+
+    public function resizeByTransparentBackground(int $width, int $height): ImageInterface;
+
+    public function resizeByBlurBackground(int $width, int $height): ImageInterface;
 
     /**
      * @return string

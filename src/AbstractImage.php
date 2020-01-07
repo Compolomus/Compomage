@@ -3,8 +3,13 @@
 namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
+use RuntimeException;
+use SplFileObject;
 
-abstract class AbstractImage
+abstract class AbstractImage implements ImageInterface
 {
     protected const POSITIONS = [
         'NORTHWEST' => ['x' => 0, 'y' => 0, 'padX' => 10, 'padY' => 10],
@@ -18,20 +23,59 @@ abstract class AbstractImage
         'SOUTHEAST' => ['x' => 2, 'y' => 2, 'padX' => -10, 'padY' => -10]
     ];
 
+    protected $image;
+
     protected $width;
 
     protected $height;
 
+    protected $orientation;
+
     /**
-     * @return mixed
+     * @param int $value
+     * @param int $range
+     * @return bool
      */
-    abstract public function getImage();
+    protected function compareRangeValue(int $value, int $range): bool
+    {
+        return in_array(abs($value), range(0, $range), true);
+    }
+
+    /**
+     * @param int $width
+     * @param int $height
+     * @param Image $background
+     * @return ImageInterface
+     */
+    protected function setBackground(int $width, int $height, $background): ImageInterface
+    {
+        $this->orientation === 'vertical'
+            ? $this->resizeByHeight($height)
+            : $this->resizeByWidth($width);
+
+        $background->watermark($this, 'CENTER');
+
+        $this->setImage($background->getImage());
+        $this->setSizes();
+
+        return $this;
+    }
+
+    protected function setOrientation(): void
+    {
+        $this->orientation = $this->getWidth() < $this->getHeight() ? 'vertical' : 'horizontal';
+    }
+
+    public function getOrientation(): string
+    {
+        return $this->orientation;
+    }
 
     /**
      * @param string $mode
      * @param int $param
      * @return ImageInterface
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function resizeBy(string $mode, int $param): ImageInterface
     {
@@ -43,7 +87,7 @@ abstract class AbstractImage
             case 'percent':
                 return $this->resizeByPercent($param);
             default:
-                throw new \InvalidArgumentException('Unsupported mode type by resize');
+                throw new InvalidArgumentException('Unsupported mode type by resize');
         }
     }
 
@@ -55,13 +99,6 @@ abstract class AbstractImage
     {
         return $this->resize($width, $this->getHeight() * ($width / $this->getWidth()));
     }
-
-    /**
-     * @param int $width
-     * @param int $height
-     * @return ImageInterface
-     */
-    abstract protected function resize(int $width, int $height): ImageInterface;
 
     /**
      * @return int
@@ -115,32 +152,34 @@ abstract class AbstractImage
         return $this->resize($width, $height);
     }
 
+    abstract protected function newImage(int $width, int $height);
+
     /**
-     * @param Image $watermark
+     * @param ImageInterface|Image $watermark
      * @param string $position
      * @return ImageInterface
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
-    public function watermark(Image $watermark, string $position): ImageInterface
+    public function watermark($watermark, string $position): ImageInterface
     {
         if (!array_key_exists(strtoupper($position), self::POSITIONS)) {
-            throw new \InvalidArgumentException('Wrong position');
+            throw new InvalidArgumentException('Wrong position');
         }
 
         return $this->prepareWatermark(
             $watermark,
-            (int)((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
-            (int)((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
+            (int) ((($this->getWidth() - $watermark->getWidth()) / 2) * self::POSITIONS[strtoupper($position)]['x']) + self::POSITIONS[strtoupper($position)]['padX'],
+            (int) ((($this->getHeight() - $watermark->getHeight()) / 2) * self::POSITIONS[strtoupper($position)]['y']) + self::POSITIONS[strtoupper($position)]['padY']
         );
     }
 
     /**
-     * @param Image $watermark
+     * @param ImageInterface|Image $watermark
      * @param int $x
      * @param int $y
      * @return ImageInterface
      */
-    abstract protected function prepareWatermark(Image $watermark, int $x, int $y): ImageInterface;
+    abstract protected function prepareWatermark($watermark, int $x, int $y): ImageInterface;
 
     /**
      * @param int $width
@@ -153,8 +192,8 @@ abstract class AbstractImage
         $newWidth = $width;
 
         $this->getWidth() / $this->getHeight() >= $width / $height
-            ? $newWidth = (int)($this->getWidth() / ($this->getHeight() / $height))
-            : $newHeight = (int)($this->getHeight() / ($this->getWidth() / $width));
+            ? $newWidth = (int) ($this->getWidth() / ($this->getHeight() / $height))
+            : $newHeight = (int) ($this->getHeight() / ($this->getWidth() / $width));
 
         return $this->prepareThumbnail($width, $height, $newWidth, $newHeight);
     }
@@ -171,19 +210,22 @@ abstract class AbstractImage
      */
     public function getBase64(): string
     {
-        return base64_encode($this->__toString());
+        return base64_encode((string) $this);
 
     }
 
     /**
-     * @return string
-     */
-    abstract public function __toString(): string;
-
-    /**
      * @param $image
      */
-    abstract protected function setImage($image): void;
+    protected function setImage($image): void
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
 
     /**
      * System method
@@ -194,7 +236,7 @@ abstract class AbstractImage
 
     /**
      * @param string $image
-     * @throws \Exception
+     * @throws Exception
      */
     protected function init(string $image): void
     {
@@ -216,7 +258,7 @@ abstract class AbstractImage
     /**
      * @param string $base64
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getImageByBase64(string $base64): void
     {
@@ -231,18 +273,18 @@ abstract class AbstractImage
 
     /**
      * @param string $url
-     * @return \InvalidArgumentException|null
-     * @throws \Exception
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws \RuntimeException
+     * @return InvalidArgumentException|null
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws RuntimeException
      */
-    protected function getImageByURL(string $url): ?\InvalidArgumentException
+    protected function getImageByURL(string $url): ?InvalidArgumentException
     {
         if (@!getimagesize($url)) {
-           throw new \InvalidArgumentException('Unsupported image type');
+            throw new InvalidArgumentException('Unsupported image type');
         }
-        $upload = new \SplFileObject($url, 'rb');
+        $upload = new SplFileObject($url, 'rb');
         $image = '';
         while (!$upload->eof()) {
             $image .= $upload->fgets();

@@ -16,7 +16,7 @@ $URL_image = 'https://4.bp.blogspot.com/-P_yzboTrLUM/WGP4FUvVAQI/AAAAAAAABGc/SkR
 (new Image($URL_image))
     ->grayscale()
     ->thumbnail(170, 180)
-    ->save('test3');
+    ->save('./test3');
 
 $base64_image = base64_encode(file_get_contents('../test.jpg'));
 
@@ -24,7 +24,7 @@ $img = new Image($base64_image, Image::GD);
 $img->thumbnail(200, 100);
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 echo '<pre>' . print_r($img, true) . '</pre>';
-$img->save('thumbnail_test1_gd');
+$img->save('./thumbnail_test1_gd');
 
 $base64_image1 = base64_encode(file_get_contents('../crop/bee.jpg'));
 
@@ -32,29 +32,43 @@ $img = new Image($base64_image1, Image::GD);
 $img->thumbnail(170, 180);
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 echo '<pre>' . print_r($img, true) . '</pre>';
-$img->save('thumbnail_test2_gd');
+$img->save('./thumbnail_test2_gd');
 
 if (extension_loaded('imagick')) {
 
 // test Imagick
 
-	(new Image(base64_encode(file_get_contents('../test.jpg')), Image::IMAGICK))
-		->copyright('Test', 'Courier', 'CENTER')
-		->thumbnail(170, 180)
-		->save('test2');
-		
-	$img = new Image($base64_image, Image::IMAGICK);
-	$img->thumbnail(200, 100);
-	echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
-	echo '<pre>' . print_r($img, true) . '</pre>';
-	$img->save('thumbnail_test1_im');
-	
-	$img = new Image($base64_image1, Image::IMAGICK);
-	$img->thumbnail(170, 180);
-	echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
-	echo '<pre>' . print_r($img, true) . '</pre>';
-	// save Imagick test
-	$img->save('thumbnail_test2_im');
+    (new Image(base64_encode(file_get_contents('../test.jpg')), Image::IMAGICK))
+        ->copyright('Test', 'Courier', 'CENTER')
+        ->thumbnail(170, 180)
+        ->save('./test2');
+
+    $img = new Image($base64_image, Image::IMAGICK);
+    $img->thumbnail(200, 100);
+    echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
+    echo '<pre>' . print_r($img, true) . '</pre>';
+    $img->save('./thumbnail_test1_im');
+
+    $img = new Image($base64_image1, Image::IMAGICK);
+    $img->thumbnail(170, 180);
+    echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
+    echo '<pre>' . print_r($img, true) . '</pre>';
+    // save Imagick test
+    $img->save('./thumbnail_test2_im');
 } else {
-	echo 'Imagick not supported';
+    echo 'Imagick not supported';
 }
+
+//$files = [
+//    'test1.png',
+//    'test2.png',
+//    'test3.png',
+//    'thumbnail_test1_gd.png',
+//    'thumbnail_test1_im.png',
+//    'thumbnail_test2_gd.png',
+//    'thumbnail_test2_im.png',
+//];
+//
+//foreach ($files as $file) {
+//    @unlink($file);
+//}

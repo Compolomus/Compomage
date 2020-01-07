@@ -293,7 +293,7 @@ class GD extends AbstractImage
      */
     public function save(string $filename, $quality = 100): bool
     {
-        return imagepng($this->getImage(), $filename . '.png', (int)($quality / 11), PNG_ALL_FILTERS);
+        return imagepng($this->getImage(), $filename . '.png', (int) ($quality / 11), PNG_ALL_FILTERS);
     }
 
     /**

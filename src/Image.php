@@ -10,8 +10,7 @@ use InvalidArgumentException;
  * @package Compolomus\Compomage
  * @method Image save(string $filename): bool
  * @method Image __toString(): string
- * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT) // bug
- * @method Image getBase64(): string
+  * @method Image getBase64(): string
  * @method Image resize(int $width, int $height): ImageInterface
  * @method Image resizeByHeight(int $height): ImageInterface
  * @method Image resizeByWidth(int $width): ImageInterface

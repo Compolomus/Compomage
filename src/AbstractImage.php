@@ -44,10 +44,10 @@ abstract class AbstractImage implements ImageInterface
     /**
      * @param int $width
      * @param int $height
-     * @param Image $background
+     * @param $background
      * @return ImageInterface
      */
-    protected function setBackground(int $width, int $height, Image $background): ImageInterface
+    protected function setBackground(int $width, int $height, $background): ImageInterface
     {
         $this->orientation === 'vertical'
             ? $this->resizeByHeight($height)

@@ -81,6 +81,8 @@ class Imagick2 extends AbstractImage
         $this->getImage()->transformimagecolorspace(Imagick::COLORSPACE_GRAY);
         $this->getImage()->separateImageChannel(1);
 
+        // modulateImage(100, 0, 100);
+
         return $this;
     }
 
@@ -236,57 +238,76 @@ class Imagick2 extends AbstractImage
      */
     protected function prepareWatermark($watermark, int $x, int $y): ImageInterface
     {
-        $watermark->getImage()->evaluateImage(Imagick::EVALUATE_MULTIPLY, 1, Imagick::CHANNEL_ALPHA);
-        $this->getImage()->compositeImage($watermark->getImage(), Imagick::COMPOSITE_DISSOLVE, $x, $y);
+        $watermark = $watermark->getImage();
+        $watermark->evaluateImage(Imagick::EVALUATE_MULTIPLY, 1, Imagick::CHANNEL_ALPHA);
+        $this->getImage()->compositeImage($watermark, Imagick::COMPOSITE_DISSOLVE, $x, $y);
 
         return $this;
     }
 
     public function resizeByTransparentBackground(int $width, int $height): ImageInterface
     {
-        // TODO: Implement resizeByTransparentBackground() method.
-        return $this;
+        $background = $this->newImage($width, $height);
+        $background->setImageFormat('png');
+
+        return $this->setBackground($width, $height, new Image(base64_encode((string) $background), Image::IMAGICK));
     }
 
     public function resizeByBlurBackground(int $width, int $height): ImageInterface
     {
-        // TODO: Implement resizeByBlurBackground() method.
-        return $this;
+        $background = new Image(base64_encode((string) $this));
+        $background->resize($width, $height)->blur();
+
+        return $this->setBackground($width, $height, $background);
     }
 
     /**
-     * @inheritDoc
+     * @param int $level
+     * @return ImageInterface
      */
     public function brightness(int $level): ImageInterface
     {
-        // TODO: Implement brightness() method.
+        if (!$this->compareRangeValue($level, 200))
+        {
+            throw new InvalidArgumentException('Wrong brightness level, range 0 - 200, ' . $level . ' given');
+        }
+        $this->getImage()->modulateImage(abs($level), 100, 100);
+
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * @param int $level
+     * @return ImageInterface
      */
     public function contrast(int $level): ImageInterface
     {
-        // TODO: Implement contrast() method.
+        if (!$this->compareRangeValue($level, 100))
+        {
+            throw new InvalidArgumentException('Wrong contrast level, range 0 - 100, ' . $level . ' given');
+        }
+        $this->getImage()->brightnessContrastImage(0, abs($level));
+
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * @return ImageInterface
      */
     public function negate(): ImageInterface
     {
-        // TODO: Implement negate() method.
+        $this->getImage()->negateImage(false);
+
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * @return ImageInterface
      */
     public function blur(): ImageInterface
     {
-        // TODO: Implement blur() method.
+        $this->getImage()->blurImage(7,5);
+
         return $this;
     }
 }

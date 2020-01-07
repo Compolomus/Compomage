@@ -4,7 +4,7 @@ namespace Compolomus\Compomage;
 
 use Compolomus\Compomage\Interfaces\ImageInterface;
 use Exception;
-use imagick;
+use Imagick;
 use ImagickDraw;
 use ImagickException;
 use ImagickPixel;
@@ -306,7 +306,7 @@ class Imagick2 extends AbstractImage
      */
     public function blur(): ImageInterface
     {
-        $this->getImage()->blurImage(7,5);
+        $this->getImage()->blurImage(7, 5);
 
         return $this;
     }

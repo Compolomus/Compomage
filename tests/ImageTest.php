@@ -46,7 +46,7 @@ class ImageTest extends TestCase
             $this->assertIsObject($obj);
             $this->assertInstanceOf(Image::class, $obj);
         } catch (Exception $e) {
-            $this->assertContains('Must be initialized ', $e->getMessage());
+            $this->assertStringContainsString('Must be initialized ', $e->getMessage());
         }
 
         $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
@@ -66,7 +66,7 @@ class ImageTest extends TestCase
             $this->assertInstanceOf(Image::class, $obj);
             $this->assertInstanceOf(Imagick::class, $obj->getImage());
         } catch (Exception $e) {
-            $this->assertContains('Must be initialized ', $e->getMessage());
+            $this->assertStringContainsString('Must be initialized ', $e->getMessage());
         }
         $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
@@ -166,11 +166,11 @@ class ImageTest extends TestCase
         unlink($imagickFile . '.png');
     }
 
-//    public function testGrayscale()
-//    {
-//        $obj = $this->getImage('imagick');
-//        $obj->grayscale();
-//        echo $obj->getImage()->getImageColorspace(), '<br>', \imagick::COLORSPACE_GRAY;
-//        $this->assertEquals($obj->getImage()->getImageColorspace(), \imagick::COLORSPACE_GRAY);
-//    }
+    public function testGrayscale()
+    {
+        $obj = $this->getImage('imagick');
+        $obj->grayscale();
+#        echo $obj->getImage()->getImageColorspace(), '<br>', \imagick::COLORSPACE_GRAY;
+        $this->assertEquals($obj->getImage()->getImageColorspace(), \imagick::COLORSPACE_GRAY);
+    }
 }

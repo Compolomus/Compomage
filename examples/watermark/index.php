@@ -23,7 +23,8 @@ if (extension_loaded('imagick')) {
 	$watermark = new Image('ImageMagick.png', Image::IMAGICK);
 	$watermark->resizeByHeight(100);
 	$img->watermark($watermark, 'CENTER');
-	$img->copyright('Imagick test', 'Courier', 'SOUTHEAST');
+    $font = $img->getFontsList()[0];
+	$img->copyright('Imagick test', $font, 'SOUTHEAST');
 	echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 } else {
 	echo 'Imagick not supported';

@@ -47,7 +47,7 @@ abstract class AbstractImage implements ImageInterface
      * @param Image $background
      * @return ImageInterface
      */
-    protected function setBackground(int $width, int $height, $background): ImageInterface
+    protected function setBackground(int $width, int $height, Image $background): ImageInterface
     {
         $this->orientation === 'vertical'
             ? $this->resizeByHeight($height)
@@ -147,9 +147,10 @@ abstract class AbstractImage implements ImageInterface
      */
     public function resizeByPercent(int $percent): ImageInterface
     {
-        $width = $this->getWidth() * ($percent / 100);
-        $height = $this->getHeight() * ($percent / 100);
-        return $this->resize($width, $height);
+        return $this->resize(
+            $this->getWidth() * ($percent / 100),
+            $this->getHeight() * ($percent / 100)
+        );
     }
 
     abstract protected function newImage(int $width, int $height);

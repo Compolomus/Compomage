@@ -48,18 +48,14 @@ class ImageTest extends TestCase
         } catch (Exception $e) {
             $this->assertContains('Must be initialized ', $e->getMessage());
         }
-        $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
         $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-        $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
         $base64_image = base64_encode(file_get_contents(dirname(__FILE__, 2) . '/examples/test.jpg'));
         $obj = new Image($base64_image, Image::GD);
-        $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
-        $URL_image = 'https://4.bp.blogspot.com/-P_yzboTrLUM/WGP4FUvVAQI/AAAAAAAABGc/SkRu_mOPKOwxsxLic-dBhugEyvPgvLEqgCLcB/s320/1.png';
+        $URL_image = 'https://help.ubuntu.ru/_media/wiki/tux_150x150.png';
         $obj = new Image($URL_image, Image::GD);
-        $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
     }
 
     public function test__constructImagick(): void
@@ -79,7 +75,7 @@ class ImageTest extends TestCase
         $obj = new Image($base64_image, Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
 
-        $URL_image = 'https://4.bp.blogspot.com/-P_yzboTrLUM/WGP4FUvVAQI/AAAAAAAABGc/SkRu_mOPKOwxsxLic-dBhugEyvPgvLEqgCLcB/s320/1.png';
+        $URL_image = 'https://help.ubuntu.ru/_media/wiki/tux_150x150.png';
         $obj = new Image($URL_image, Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
@@ -123,7 +119,6 @@ class ImageTest extends TestCase
     {
         $gdBase64 = $this->getImage('gd')->getBase64();
         $obj = new Image($gdBase64, Image::GD);
-        $this->assertEquals(get_resource_type($obj->getImage()), 'gd');
 
         $imagickBase64 = $this->getImage('imagick')->getBase64();
         $obj = new Image($imagickBase64, Image::IMAGICK);

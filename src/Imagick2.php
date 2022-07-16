@@ -154,13 +154,18 @@ class Imagick2 extends AbstractImage
     /**
      * @param int $width
      * @param int $height
-     * @param int $startX
-     * @param int $startY
+     * @param int $x
+     * @param int $y
      * @return ImageInterface
+     * @throws ImagickException
      */
-    public function crop(int $width, int $height, int $startX, int $startY): ImageInterface
+
+    public function crop(int $width, int $height, int $x, int $y): ImageInterface
     {
-        $this->getImage()->cropImage($width, $height, $startX, $startY);
+        $width -= $x;
+        $height -= $y;
+
+        $this->getImage()->cropImage($width, $height, $x, $y);
         $this->setSizes();
 
         return $this;
@@ -169,7 +174,9 @@ class Imagick2 extends AbstractImage
     public function save(string $filename, $quality = 100): bool
     {
         $this->getImage()->setImageCompressionQuality($quality);
-        $this->getImage()->writeImage($filename . '.png');
+        $this->getImage()->setImageFormat('png');
+        #$this->getImage()->writeImage($filename . '.png'); // bug
+        file_put_contents ($filename. '.png', $this->getImage());
 
         return true;
     }
@@ -223,8 +230,8 @@ class Imagick2 extends AbstractImage
     protected function newImage(int $width, int $height): Imagick
     {
         $background = new Imagick;
-        $background->newImage($width, $height, new ImagickPixel('transparent'));
-        $background->setImageBackgroundColor(new ImagickPixel('transparent'));
+        $background->newImage($width, $height, 'none');
+        $background->setImageAlphaChannel(Imagick::ALPHACHANNEL_TRANSPARENT);
 
         return $background;
     }
@@ -249,6 +256,11 @@ class Imagick2 extends AbstractImage
     {
         $background = $this->newImage($width, $height);
         $background->setImageFormat('png');
+
+        $w = (int) (($width - $this->getWidth()) / 2);
+        $h = (int) (($height - $this->getHeight()) / 2);
+
+        $background->compositeImage($this->getImage(), Imagick::COMPOSITE_DISSOLVE, $w, $h);
 
         return $this->setBackground($width, $height, new Image(base64_encode((string) $background), Image::IMAGICK));
     }

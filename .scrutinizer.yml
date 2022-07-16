@@ -1,19 +1,28 @@
 filter:
-    excluded_paths:
-        - "examples/"
-        - "tests/"
+  excluded_paths:
+    - "tests/"
+    - "example/"
 checks:
-    php: true
+  php: true
 coding_style:
-    php:
-        spaces:
-            around_operators:
-                concatenation: true
+  php:
+    spaces:
+      around_operators:
+        concatenation: true
 build:
-    tests:
+  environment:
+    variables:
+      COMPOSER_ROOT_VERSION: 2.0
+    php:
+      version: '8.0'
+      ini:
+        'xdebug.mode': 'coverage'
+  nodes:
+    coverage:
+      tests:
         override:
-          -
-            command: 'php ./vendor/bin/phpunit --coverage-clover=coverage-clover'
+          - php-scrutinizer-run
+          - command: php vendor/bin/phpunit --coverage-clover coverage.xml
             coverage:
-              file: 'coverage-clover'
-              format: 'php-clover'
+              file: coverage.xml
+              format: clover

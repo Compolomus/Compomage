@@ -9,8 +9,8 @@ use Imagick;
 
 class ImageTest extends TestCase
 {
-    private static $imageGD;
-    private static $imageImagick;
+    public static Image $imageGD;
+    public static Image $imageImagick;
 
     protected function setUp(): void
     {

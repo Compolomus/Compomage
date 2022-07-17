@@ -21,7 +21,7 @@ build:
     coverage:
       tests:
         before:
-          chmod -R 777 /home/scrutinizer/build/tests
+          - chmod -R 777 /home/scrutinizer/build/tests
         override:
           - php-scrutinizer-run
           - command: php vendor/bin/phpunit --coverage-clover coverage.xml

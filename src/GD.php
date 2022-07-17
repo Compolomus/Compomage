@@ -335,7 +335,7 @@ class GD extends AbstractImage
      */
     protected function tmp(string $source): ImageInterface
     {
-        if ($image = @imagecreatefromstring($source)) {
+        if (!$image = @imagecreatefromstring($source)) {
             throw new InvalidArgumentException('Image create failed');
         }
         $this->setImage($image);

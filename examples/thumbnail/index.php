@@ -21,7 +21,7 @@ $img = new Image($URL_image, Image::GD);
 $base64_image = base64_encode(file_get_contents('../test.jpg'));
 
 $img = new Image($base64_image, Image::GD);
-$img->thumbnail(200, 100);
+$img->thumbnail(100, 200);
 echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 echo '<pre>' . print_r($img, true) . '</pre>';
 $img->save('./thumbnail_test1_gd');
@@ -40,7 +40,7 @@ if (extension_loaded('imagick')) {
 
     $img = new Image($base64_image, Image::IMAGICK);
     $font = $img->getFontsList()[0];
-    $img->thumbnail(200, 100);
+    $img->thumbnail(100, 200);
     echo '<img src="data:image/png;base64,' . $img->getBase64() . '" alt="base64_image" style="background-color: orange;" />';
 
     $img->save('./thumbnail_test1_im');

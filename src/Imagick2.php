@@ -194,7 +194,7 @@ class Imagick2 extends AbstractImage
      */
     protected function prepareThumbnail(int $width, int $height): ImageInterface
     {
-        $this->getImage()->cropThumbnailImage($width, $height);
+        $this->getImage()->thumbnailImage($width, $height); //, false, true, true
 
         return $this;
     }

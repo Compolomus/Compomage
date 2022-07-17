@@ -192,7 +192,7 @@ abstract class AbstractImage implements ImageInterface
         $newHeight = $height;
         $newWidth = $width;
 
-        $this->getWidth() / $this->getHeight() >= $width / $height
+        ($this->getWidth() / $this->getHeight()) >= ($width / $height)
             ? $newWidth = (int) ($this->getWidth() / ($this->getHeight() / $height))
             : $newHeight = (int) ($this->getHeight() / ($this->getWidth() / $width));
 

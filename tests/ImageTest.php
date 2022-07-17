@@ -9,31 +9,13 @@ use Imagick;
 
 class ImageTest extends TestCase
 {
-    private static $imageGD;
-    private static $imageImagick;
+    private $imageGD;
+    private $imageImagick;
 
-    /**
-     * @param string $type
-     * @param bool $new
-     * @return Image
-     */
-    private function getImage($type = 'gd', $new = false): Image
+    protected function setUp(): void
     {
-        if (!self::$imageGD || !self::$imageImagick || $new) {
-            try {
-                self::$imageGD = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
-            try {
-                self::$imageImagick = new Image(dirname(__FILE__, 2) . '/examples/crop/bee.jpg',
-                    Image::IMAGICK);
-            } catch (Exception $e) {
-                echo $e->getMessage();
-            }
-        }
-
-        return $type === 'gd' ? self::$imageGD : self::$imageImagick;
+        $this->imageGD = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
+        $this->imageImagick = new Image(dirname(__FILE__, 2) . '/examples/crop/bee.jpg', Image::IMAGICK);
     }
 
     /**
@@ -46,7 +28,7 @@ class ImageTest extends TestCase
             $this->assertIsObject($obj);
             $this->assertInstanceOf(Image::class, $obj);
         } catch (Exception $e) {
-            $this->assertStringContainsString('Must be initialized ', $e->getMessage());
+            $this->assertStringContainsString('Image create failed ', $e->getMessage());
         }
 
         $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
@@ -88,89 +70,83 @@ class ImageTest extends TestCase
 
     public function testResizesBy(): void
     {
-        $this->getImage()->resizeBy('width', 100);
-        $this->assertEquals(100, $this->getImage()->getWidth());
-        $this->getImage()->resizeBy('height', 150);
-        $this->assertEquals(150, $this->getImage()->getHeight());
-        $this->getImage()->resizeBy('percent', 50);
-        $this->assertEquals(75, $this->getImage()->getHeight());
+        $this->imageGD->resizeBy('width', 100);
+        $this->assertEquals(100, $this->imageGD->getWidth());
+        $this->imageGD->resizeBy('height', 150);
+        $this->assertEquals(150, $this->imageGD->getHeight());
+        $this->imageGD->resizeBy('percent', 50);
+        $this->assertEquals(75, $this->imageGD->getHeight());
     }
 
     public function testThumbnailGD(): void
     {
-        $this->getImage()->thumbnail(100, 100);
-        $this->assertEquals(100, $this->getImage()->getHeight());
-        $this->assertEquals(100, $this->getImage()->getWidth());
+        $this->imageGD->thumbnail(100, 100);
+        $this->assertEquals(100, $this->imageGD->getHeight());
+        $this->assertEquals(100, $this->imageGD->getWidth());
     }
 
     public function testThumbnailImagick(): void
     {
-        $this->getImage('Imagick')->thumbnail(100, 100);
-        $this->assertEquals(100, $this->getImage()->getHeight());
-        $this->assertEquals(100, $this->getImage()->getWidth());
+        $this->imageImagick->thumbnail(100, 100);
+        $this->assertEquals(100, $this->imageImagick->getHeight());
+        $this->assertEquals(100, $this->imageImagick->getWidth());
     }
 
     public function testGetFontsList(): void
     {
-        $this->assertIsArray($this->getImage('Imagick')->getFontsList());
+        $this->assertIsArray($this->imageImagick->getFontsList());
     }
 
     public function testGetBase64(): void
     {
-        $gdBase64 = $this->getImage('gd')->getBase64();
+        $gdBase64 = $this->imageGD->getBase64();
         $obj = new Image($gdBase64, Image::GD);
 
-        $imagickBase64 = $this->getImage('imagick')->getBase64();
+        $imagickBase64 = $this->imageImagick->getBase64();
         $obj = new Image($imagickBase64, Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
     public function testResize(): void
     {
-        $obj = $this->getImage('gd', true);
-        $obj->resize(170, 150);
-        $this->assertEquals(170, $obj->getWidth());
-        $this->assertEquals(150, $obj->getHeight());
+        $this->imageGD->resize(170, 150);
+        $this->assertEquals(170, $this->imageGD->getWidth());
+        $this->assertEquals(150, $this->imageGD->getHeight());
 
-        $obj = $this->getImage('imagick', true);
-        $obj->resize(160, 140);
-        $this->assertEquals(160, $obj->getWidth());
-        $this->assertEquals(140, $obj->getHeight());
+        $this->imageImagick->resize(160, 140);
+        $this->assertEquals(160, $this->imageImagick->getWidth());
+        $this->assertEquals(140, $this->imageImagick->getHeight());
     }
 
     public function testRotate(): void
     {
-        $obj = $this->getImage('gd', true);
-        $obj->rotate();
-        $this->assertEquals(609, $obj->getWidth());
+        $this->imageGD->rotate();
+        $this->assertEquals(609, $this->imageGD->getWidth());
 
-        $obj = $this->getImage('imagick', true);
-        $obj->rotate();
-        $this->assertEquals(300, $obj->getWidth());
+        $this->imageImagick->rotate();
+        $this->assertEquals(300, $this->imageImagick->getWidth());
     }
 
     public function testSave(): void
     {
-        $gdFile =dirname(__FILE__, 2) . '/gdTest';
+        $gdFile = dirname(__FILE__, 2) . '/gdTest';
         $imagickFile = dirname(__FILE__, 2) . '/imagickTest';
 
-        $obj = $this->getImage('gd');
-        $obj->save($gdFile);
+        $this->imageGD->save($gdFile);
         $this->assertFileExists($gdFile . '.png');
 
-        $obj = $this->getImage('imagick');
-        $obj->save($imagickFile);
+        $this->imageImagick->save($imagickFile);
         $this->assertFileExists($imagickFile . '.png');
 
         unlink($gdFile . '.png');
         unlink($imagickFile . '.png');
     }
 
-    public function testGrayscale()
-    {
-        $obj = $this->getImage('imagick');
-        $obj->grayscale();
-#        echo $obj->getImage()->getImageColorspace(), '<br>', \imagick::COLORSPACE_GRAY;
-        $this->assertEquals($obj->getImage()->getImageColorspace(), \imagick::COLORSPACE_GRAY);
-    }
+//    public function testGrayscale()
+//    {
+//        $obj = $this->getImage('imagick');
+//        $obj->grayscale();
+//#        echo $obj->getImage()->getImageColorspace(), '<br>', \imagick::COLORSPACE_GRAY;
+//        $this->assertEquals($obj->getImage()->getImageColorspace(), \imagick::COLORSPACE_GRAY);
+//    }
 }

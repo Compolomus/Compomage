@@ -19,12 +19,12 @@
     }
   },
   "require": {
-    "php": "^8.0",
+    "php": "^7.4|^8.0",
     "ext-gd": "*",
     "ext-imagick": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^9.0",
     "laminas/laminas-coding-standard": "^1.0"
   },
   "suggest": {

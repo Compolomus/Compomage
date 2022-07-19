@@ -33,6 +33,7 @@ use InvalidArgumentException;
  * @method Image watermark($watermark, string $position): ImageInterface
  * @method Image thumbnail(int $width, int $height): ImageInterface
  * @method Image evaluateImage(int $op, float $constant, int $channel = \Imagick::CHANNEL_DEFAULT) // bug
+ * @method Image getFontsList(): array
  */
 
 class Image

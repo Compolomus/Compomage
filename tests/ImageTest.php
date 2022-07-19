@@ -14,8 +14,8 @@ class ImageTest extends TestCase
     
     public function setUp(): void
     {
-        $this->imageGD = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-        $this->imageImagick = new Image(dirname(__FILE__, 2) . '/examples/crop/bee.jpg', Image::IMAGICK);
+        $this->imageGD = new Image(__DIR__ . '/test.jpg', Image::GD);
+        $this->imageImagick = new Image(__DIR__ . '/bee.jpg', Image::IMAGICK);
     }
 
     /**
@@ -24,36 +24,34 @@ class ImageTest extends TestCase
     public function test__constructGD(): void
     {
         try {
-            $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-            $this->assertIsObject($obj);
-            $this->assertInstanceOf(Image::class, $obj);
+            $this->assertIsObject($this->imageGD);
+            $this->assertInstanceOf(Image::class, $this->imageGD);
         } catch (Exception $e) {
             $this->assertStringContainsString('Image create failed ', $e->getMessage());
         }
 
-        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::GD);
-
-        $base64_image = base64_encode(file_get_contents(dirname(__FILE__, 2) . '/examples/test.jpg'));
+        $base64_image = base64_encode(file_get_contents(__DIR__ . '/test.jpg'));
         $obj = new Image($base64_image, Image::GD);
+        $this->assertInstanceOf(Image::class, $obj);
 
         $URL_image = 'https://help.ubuntu.ru/_media/wiki/tux_150x150.png';
         $obj = new Image($URL_image, Image::GD);
+        $this->assertInstanceOf(Image::class, $obj);
     }
 
     public function test__constructImagick(): void
     {
         try {
-            $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
-            $this->assertIsObject($obj);
-            $this->assertInstanceOf(Image::class, $obj);
-            $this->assertInstanceOf(Imagick::class, $obj->getImage());
+            $this->assertIsObject($this->imageImagick);
+            $this->assertInstanceOf(Image::class, $this->imageImagick);
+            $this->assertInstanceOf(Imagick::class, $this->imageImagick->getImage());
         } catch (Exception $e) {
             $this->assertStringContainsString('Must be initialized ', $e->getMessage());
         }
-        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg', Image::IMAGICK);
-        $this->assertInstanceOf(Imagick::class, $obj->getImage());
 
-        $base64_image = base64_encode(file_get_contents(dirname(__FILE__, 2) . '/examples/test.jpg'));
+        $this->assertInstanceOf(Imagick::class, $this->imageImagick->getImage());
+
+        $base64_image = base64_encode(file_get_contents(__DIR__ . '/test.jpg'));
         $obj = new Image($base64_image, Image::IMAGICK);
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
 
@@ -64,7 +62,7 @@ class ImageTest extends TestCase
 
     public function test__constructAuto(): void
     {
-        $obj = new Image(dirname(__FILE__, 2) . '/examples/test.jpg');
+        $obj = new Image(__DIR__ . '/test.jpg');
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
@@ -97,16 +95,6 @@ class ImageTest extends TestCase
         $this->assertIsArray($this->imageImagick->getFontsList());
     }
 
-    public function testGetBase64(): void
-    {
-        $gdBase64 = $this->imageGD->getBase64();
-        $obj = new Image($gdBase64, Image::GD);
-
-        $imagickBase64 = $this->imageImagick->getBase64();
-        $obj = new Image($imagickBase64, Image::IMAGICK);
-        $this->assertInstanceOf(Imagick::class, $obj->getImage());
-    }
-
     public function testResize(): void
     {
         $this->imageGD->resize(170, 150);
@@ -129,11 +117,8 @@ class ImageTest extends TestCase
 
     public function testSave(): void
     {
-        $gdFile = dirname(__FILE__, 2) . '/gdTest';
-        $imagickFile = dirname(__FILE__, 2) . '/imagickTest';
-
-        mkdir($gdFile, 0777, true);
-        mkdir($imagickFile, 0777, true);
+        $gdFile = __DIR__ . '/gdTest';
+        $imagickFile = __DIR__ . '/imagickTest';
 
         $this->imageGD->save($gdFile);
         $this->assertFileExists($gdFile . '.png');
@@ -143,9 +128,6 @@ class ImageTest extends TestCase
 
         unlink($gdFile . '.png');
         unlink($imagickFile . '.png');
-
-        rmdir($gdFile);
-        rmdir($imagickFile);
     }
 
 //    public function testGrayscale()

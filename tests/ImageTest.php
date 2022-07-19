@@ -12,9 +12,8 @@ class ImageTest extends TestCase
     public Image $imageGD;
     public Image $imageImagick;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function setUp(): void
     {
-        parent::__construct($name, $data, $dataName);
         $this->imageGD = new Image(__DIR__ . '/test.jpg', Image::GD);
         $this->imageImagick = new Image(__DIR__ . '/bee.jpg', Image::IMAGICK);
     }

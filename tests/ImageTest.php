@@ -11,9 +11,10 @@ class ImageTest extends TestCase
 {
     public Image $imageGD;
     public Image $imageImagick;
-    
-    public function setUp(): void
+
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
+        parent::__construct($name, $data, $dataName);
         $this->imageGD = new Image(__DIR__ . '/test.jpg', Image::GD);
         $this->imageImagick = new Image(__DIR__ . '/bee.jpg', Image::IMAGICK);
     }
@@ -21,14 +22,10 @@ class ImageTest extends TestCase
     /**
      * @throws Exception
      */
-    public function test__constructGD(): void
+    public function testConstructGD(): void
     {
-        try {
-            $this->assertIsObject($this->imageGD);
-            $this->assertInstanceOf(Image::class, $this->imageGD);
-        } catch (Exception $e) {
-            $this->assertStringContainsString('Image create failed ', $e->getMessage());
-        }
+        $this->assertIsObject($this->imageGD);
+        $this->assertInstanceOf(Image::class, $this->imageGD);
 
         $base64_image = base64_encode(file_get_contents(__DIR__ . '/test.jpg'));
         $obj = new Image($base64_image, Image::GD);
@@ -39,16 +36,10 @@ class ImageTest extends TestCase
         $this->assertInstanceOf(Image::class, $obj);
     }
 
-    public function test__constructImagick(): void
+    public function testConstructImagick(): void
     {
-        try {
-            $this->assertIsObject($this->imageImagick);
-            $this->assertInstanceOf(Image::class, $this->imageImagick);
-            $this->assertInstanceOf(Imagick::class, $this->imageImagick->getImage());
-        } catch (Exception $e) {
-            $this->assertStringContainsString('Must be initialized ', $e->getMessage());
-        }
-
+        $this->assertIsObject($this->imageImagick);
+        $this->assertInstanceOf(Image::class, $this->imageImagick);
         $this->assertInstanceOf(Imagick::class, $this->imageImagick->getImage());
 
         $base64_image = base64_encode(file_get_contents(__DIR__ . '/test.jpg'));
@@ -60,7 +51,7 @@ class ImageTest extends TestCase
         $this->assertInstanceOf(Imagick::class, $obj->getImage());
     }
 
-    public function test__constructAuto(): void
+    public function testConstructAuto(): void
     {
         $obj = new Image(__DIR__ . '/test.jpg');
         $this->assertInstanceOf(Imagick::class, $obj->getImage());

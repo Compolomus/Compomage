@@ -97,7 +97,7 @@ abstract class AbstractImage implements ImageInterface
      */
     public function resizeByWidth(int $width): ImageInterface
     {
-        return $this->resize($width, $this->getHeight() * (int) ($width / $this->getWidth()));
+        return $this->resize($width, (int) ($this->getHeight() * ($width / $this->getWidth())));
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class AbstractImage implements ImageInterface
      */
     public function resizeByHeight(int $height): ImageInterface
     {
-        return $this->resize($this->getWidth() * (int) ($height / $this->getHeight()), (int) $height);
+        return $this->resize((int) ($this->getWidth() * ($height / $this->getHeight())), $height);
     }
 
     /**
